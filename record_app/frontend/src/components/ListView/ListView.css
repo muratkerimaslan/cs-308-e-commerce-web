@@ -1,0 +1,24 @@
+.book-container li {
+    display: inline-block;
+    border-style: inset ;
+    border-color: black;
+    border-width: 2px;
+    font-size: 20px;
+    padding: 20px;
+    margin:20px;
+    margin-bottom: 10px;
+    
+
+  }
+
+
+  .book-container {
+    background-color: rgb(207, 216, 195); 
+    list-style-type: circle;
+    text-align:center;
+    margin: 0;
+    padding: 0;
+    
+  }
+
+

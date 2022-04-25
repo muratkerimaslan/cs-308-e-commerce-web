@@ -1,0 +1,13 @@
+.header-bar {
+    background-color: rgb(110, 179, 21); 
+    list-style-type: none;
+    text-align: end;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .header-bar li {
+    display: inline-block;
+    font-size: 20px;
+    padding: 20px;
+  }
