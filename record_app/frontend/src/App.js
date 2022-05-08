@@ -6,6 +6,7 @@ import SignUp from './routes/SignUp.js';
 import Home from './routes/Home.js';
 import CartPage from './routes/CartPage';
 import BookPage from './routes/BookPage';
+import CheckoutPage from './routes/CheckoutPage';
 
 
 function App() {
@@ -20,9 +21,10 @@ function App() {
           <Route path=":bookId" element={<BookPage />} />
         </Route>
         {/* <Route path = 'Genres/:genre' element={<Home/>} /> */}
-        <Route exact path="Genres">
+        <Route path="Genres">
           <Route path=":genre" element={<Home />} />
         </Route>
+        <Route path='/Checkout' element={<CheckoutPage/>}   />
        </Routes>
     </Router>
    

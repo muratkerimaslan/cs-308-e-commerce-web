@@ -1,24 +1,66 @@
 
 
 // import { Link } from "react-router-dom";
-import { setGlobalUserRecentlyLoggedIn,setGlobalCartRemoveBook,useGlobalState, } from "../../auth/global_state";
+import { setGlobalUserRecentlyLoggedIn,setGlobalCartRemoveBook,setGlobalCartNewQty ,useGlobalState, } from "../../auth/global_state";
 import axios from "axios";
 import AddToCartButton from "../AddToCartButton";
+import { useState } from "react";
 const CartList = () => {
     const [cart] = useGlobalState('cart');
     const [user] = useGlobalState('user');
-    console.log("user == " );
-    console.log(user);
-    console.log("cart = ");
-    console.log(cart);
+    // const [loadedBooksDict, setLoadedBooksDict ] = useState([]);
+    // console.log("user == " );
+    // console.log(user);
+    // console.log("cart = ");
+    // console.log(cart);
     // if (user.username === ""){ // not signedin;
     //     console.log("cart without checking backend = ");
     //     console.log(cart);
     // }
-    if (cart.numItems === 0 ){
-        console.log("CART is empty");
+    // if (cart.numItems === 0 ){
+    //     console.log("CART is empty");
         
+    // }
+    
+
+    const handleDBLoadUserCart = () => { // not using useEffect as it will only be called inside IF block
+            axios.get('http://localhost:8000/getCartItems/' + user.user_id )
+            .then(function (response) {
+                console.log("handDBloaduserCart");
+                console.log(response.data); 
+                for (const cartItem of response.data) { // response.data = cartItems {book:2 , amount: 1}  => book_id; other fields in cartItem is useless
+                    const new_qty = cartItem.amount;
+                    console.log("book id ");
+                    console.log(cartItem.book);
+                    handleDBLoadBook(cartItem.book,new_qty) // carItem.book = bookID; not the book object for some reason 
+                    // setGlobalCartNewQty(new_book,parseInt(new_qty)); this is called inside handleDBloadbook instead
+                }
+            })
+            .catch(function (error) {
+              console.log(error);
+            });
     }
+    const handleDBLoadBook = (bookId,new_qty) => { // helper for loadusercart and set frontend Global inside this because of async nature of axiso get
+            axios.get('http://localhost:8000/books/' + bookId)
+            .then(function (response) {
+            // setLoadedBooksDict((prev) => ({...prev, bookId:response.data }));
+            setGlobalCartNewQty(response.data,new_qty);
+            })
+            .catch(function (error) {
+            console.log(error);
+            });
+    }
+    const handleDBDeleteFromCart = (bookId) => { 
+        axios.delete('http://localhost:8000/deleteCartItem/' + bookId + '/' + user.user_id )
+        .then(function (response) {
+          console.log(response);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    }
+
+
     if (user.username !== "" && user.recently_logged_in === true) // logging in and checking cart for the first time
     {
         setGlobalUserRecentlyLoggedIn(false); // set recent_logged_in field to false;
@@ -32,6 +74,9 @@ const CartList = () => {
             setGlobalCartRemoveBook(cur_key); // chec
           }
         // use effect downlaod new
+        
+        handleDBLoadUserCart();
+        
     }
     // useEffect(() => {
         //     const handleDB = () => {
@@ -46,20 +91,12 @@ const CartList = () => {
         //     handleDB();
         // }, []);
     
-    console.log("user == " );
-    console.log(user);
+    // console.log("user == " );
+    // console.log(user);
     // path('getCartItems/<str:pk>/', views.getCartItems),
     // path('addCartItem/<str:pk>', views.addCartItem),
     // path('deleteCartItem/<str:b_pk>/<str:u_pk>', views.deleteCartItem),
-    const handleDBDeleteFromCart = (bookId) => {
-        axios.delete('http://localhost:8000/deleteCartItem/' + bookId + '/' + user.user_id )
-        .then(function (response) {
-          console.log(response);
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
-    }
+   
 
     const RemoveFromCart = (e,book_id) => { // add to cart is in addtocartbutton component
         e.preventDefault();

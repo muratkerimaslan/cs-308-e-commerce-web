@@ -1,6 +1,5 @@
 import { useState } from "react";
-import { useParams } from "react-router-dom";
-import { Link, Navigate, useNavigate } from "react-router-dom";
+// import { Link, Navigate, useNavigate } from "react-router-dom";
 import './CommentView.css';
 import axios from 'axios';
 import { useGlobalState } from "../../auth/global_state";

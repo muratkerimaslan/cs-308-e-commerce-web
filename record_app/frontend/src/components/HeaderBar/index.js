@@ -1,13 +1,17 @@
 
-import { Link } from "react-router-dom";
+import { Link, useLocation, } from "react-router-dom";
 import './HeaderBar.css'
 import { useState } from "react";
 import { useGlobalState } from "../../auth/global_state";
 
-const HeaderBar = ({home_search_term , setHomeSearchTerm} ) => {
+const HeaderBar = ({home_search_term , setHomeSearchTerm} ) => { // home search term isn't used right now, as we only set its value, to pass to listview, we don't use its value inside headerbar
     const [{username}] = useGlobalState('user');
     const [{numItems}] = useGlobalState('cart'); // from cart
     const [barSearchTerm, setBarSearchTerm] = useState('');
+
+    let current_adress = useLocation(); // to check if we are in cart page or not, to display checkout page
+    console.log("location = ");
+    console.log(current_adress);
     // console.log(username);
     // console.log("Cart items = ");
     // console.log(cartNumItems2);
@@ -23,12 +27,12 @@ const HeaderBar = ({home_search_term , setHomeSearchTerm} ) => {
     //genres:
     const genres = ["Fiction","Fantasy","Adventure","Science Fiction","Classics"];
 
-    const flushSearches = (e) =>
-    {
-        // e.preventDefault();
-        // setHomeSearchTerm( '' );
-        // setBarSearchTerm( '' );
-    }
+    // const flushSearches = (e) => // breaks the Login and Cart Global states somehow
+    // {
+    //     // e.preventDefault();
+    //     // setHomeSearchTerm( '' );
+    //     // setBarSearchTerm( '' );
+    // }
 
     const GenreListItems = genres.map(
         (genre) => {
@@ -65,10 +69,21 @@ const HeaderBar = ({home_search_term , setHomeSearchTerm} ) => {
                     <li> <Link to ='/SignUp'> SignUp </Link> </li>
                 </>
             }
-            <li>
-                <Link to = '/Cart'> MyCart</Link><br/>
-                cart items = {numItems}
-            </li>
+            {
+                (current_adress.pathname === '/Cart') ?    // if is in CartPage
+                <li>  
+                  <Link to = {(username === '') ? '/Login' : '/Checkout' }> Checkout</Link><br/>
+                  cart items = {numItems}
+                </li>  : 
+                // else
+                <>                 
+                <li>
+                    <Link to = '/Cart'> MyCart</Link><br/>
+                    cart items = {numItems}
+                </li>  
+                </>
+            }
+            
             
 
         </ul>

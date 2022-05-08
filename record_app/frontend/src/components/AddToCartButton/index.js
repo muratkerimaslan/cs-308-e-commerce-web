@@ -6,8 +6,36 @@ const AddToCartButton =  ({book, msg = "add to cart", init_qty = 1}) => {
 
 
     const [{user_id}] = useGlobalState('user');
+    const [cart] = useGlobalState('cart');
     const [qty,setQty] = useState(init_qty);
 
+    
+    // path('addCartItem/<str:pk>', views.addCartItem),
+    // pk = user.id
+    const handleDBAddToCart = (bookId,quantity) => { 
+        axios.post('http://localhost:8000/addCartItem/'+user_id, {
+          amount: quantity ,
+          book_id: bookId,
+        })
+        .then(function (response) { // probably response.data[0] = {is_authenticated and user_id};
+            console.log("handleDBAddToCartResponsse =");
+            console.log(response)
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+        
+      }
+
+    const handleDBDeleteFromCart = (bookId) => { 
+        axios.delete('http://localhost:8000/deleteCartItem/' + bookId + '/' + user_id )
+        .then(function (response) {
+          console.log(response);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    }
     // console.log(book.book_id);
     const qtyOptions = (stock) => {
         const row = [];
@@ -23,24 +51,8 @@ const AddToCartButton =  ({book, msg = "add to cart", init_qty = 1}) => {
         return row;
     }
 
-    // path('addCartItem/<str:pk>', views.addCartItem),
-    // pk = user.id
-    const handleDBAddToCart = (bookId,quantity) => {
-        axios.post('http://localhost:8000/addCartItem/'+user_id, {
-          amount: quantity ,
-          book_id: bookId,
-        })
-        .then(function (response) { // probably response.data[0] = {is_authenticated and user_id};
-            console.log("handleDBAddToCartResponsse =");
-            console.log(response)
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
-        
-      }
     
-    const addToCartAmount = (e) => {
+    const addToCartAmount = (e) => { // if item doesn't exist, add directly, else remove then add
         e.preventDefault();
         console.log("book = =");
         console.log(book);
@@ -48,7 +60,17 @@ const AddToCartButton =  ({book, msg = "add to cart", init_qty = 1}) => {
         console.log(book.book_id);
         console.log(qty);
         setGlobalCartNewQty(book,parseInt(qty));
-        handleDBAddToCart(book.book_id,parseInt(qty));
+
+        if (user_id !== ''){ // only add to databse if the user is logged in
+            // now to check if item exists in cart;
+            if (cart.Items_Id.hasOwnProperty(book.book_id) ){ // checkingg if book_id already exists in cart 
+                // delete if exists
+                console.log("deleting book to update book name :" + book.title);
+                handleDBDeleteFromCart(book.book_id);
+            }
+            handleDBAddToCart(book.book_id,parseInt(qty));
+        }
+        
     }
 
 
