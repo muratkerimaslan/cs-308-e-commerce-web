@@ -19,5 +19,38 @@ urlpatterns = [
     path('books/<str:pk>/delete', views.deleteBook),
     path('books/<str:pk>/', views.getBook),
 
-    path('searchBooks', views.searchBooks),
+    path('searchBooks/<str:pk>/', views.searchBooks),
+    
+    #create author
+    path('authors/create/', views.createAuthor),  
+    #delete author
+    path('authors/<str:pk>/delete', views.deleteAuthor),
+    #get author
+    path('authors/<str:pk>/', views.getAuthor),
+    #update author
+    path('authors/update/<str:pk>', views.updateAuthor),
+
+    path('getCartItems/<str:pk>/', views.getCartItems),
+    path('addCartItem/<str:pk>', views.addCartItem),
+    path('deleteCartItem/<str:b_pk>/<str:u_pk>', views.deleteCartItem),
+    path('updateCartItem/<str:b_pk>/<str:u_pk>', views.updateCartItem),
+    path('checkout/<str:pk>', views.checkout),
+
+    #getInvisibleComments
+    path('comments/', views.getInvisibleComments),
+
+    #getComments
+    path('comments/<str:pk>/', views.getComments),
+
+    #updateVisibility
+    path('comments/update/<str:pk>/', views.updateVisibility),
+
+    #makeComment
+    path('comments/create', views.createComment),
+
+    #getBooksByGenre
+    path('getBooksByGenre/<str:pk>/', views.getBooksByGenre)
+
+
+    
 ]

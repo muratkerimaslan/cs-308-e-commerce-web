@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import './LoginForm.css';
 import axios from 'axios';
-import { setGlobalUsername, setGlobalEmail, useGlobalState } from "../../auth/global_state";
+import { setGlobalUsername, setGlobalUserEmail, setGlobalUserId } from "../../auth/global_state";
 
 
 
@@ -15,20 +15,24 @@ const LoginForm = () => {
         name: name,
         password: password,
       })
-      .then(function (response) {
+      .then(function (response) { // probably response.data[0] = {is_authenticated and user_id};
         console.log(response.data[0].is_authenticated);
+        console.log(response.data[0].user_id);
         if (response.data[0].is_authenticated === true){ //Correct ID and Password
           setGlobalUsername(name);
-          setGlobalEmail("123@gmail.com");
-          navigate("/");
+          setGlobalUserEmail("123@gmail.com");
+          setGlobalUserId(response.data[0].user_id);
+          navigate("/Cart");
         }
         else{
           console.log("noluyo");
+          alert("Login Failed");
         }
           
       })
       .catch(function (error) {
         console.log(error);
+        alert("Login Failed Error");
       });
       
     }

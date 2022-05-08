@@ -20,7 +20,11 @@ dist/
 *.jar
 
 # Maven
+<<<<<<< HEAD
+target/git rm --cached -- Assets/Sprites/.DS_Store
+=======
 target/
+>>>>>>> origin/master
 dist/
 
 # JetBrains IDE
@@ -40,6 +44,11 @@ Thumbs.db
 *.exe
 *.war
 
+<<<<<<< HEAD
+
+
+=======
+>>>>>>> origin/master
 # Large media files
 *.mp4
 *.tiff
