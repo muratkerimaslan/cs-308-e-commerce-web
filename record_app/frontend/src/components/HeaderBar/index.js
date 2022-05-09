@@ -75,13 +75,13 @@ const HeaderBar = ({home_search_term , setHomeSearchTerm} ) => { // home search 
                 (current_adress.pathname === '/Cart') ?    // if is in CartPage
                 <li>  
                   <Link to = {(username === '') ? '/Login' : '/Checkout' }> Checkout</Link><br/>
-                  <p style={{color:'rgb(17, 71, 121)', fontWeight:'700'}}> subtotal ({numItems} items) </p>
+                  <p style={{color:'rgb(17, 71, 121)', fontWeight:'600'}}> subtotal ({numItems} items) </p>
                 </li>  : 
                 // else
                 <>                 
                 <li>
                     <Link to = '/Cart'> MyCart</Link><br/>
-                    <p style={{color:'rgb(17, 71, 121)', fontWeight:'700'}}> subtotal ({numItems} items) </p>
+                    <p style={{color:'rgb(17, 71, 121)', fontWeight:'600'}}> subtotal ({numItems} items) </p>
                 </li>  
                 </>
             }

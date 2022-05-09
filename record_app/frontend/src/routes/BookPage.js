@@ -9,7 +9,7 @@ const BookPage = () => {
    
     return(
         <>
-            <HeaderBar isInCart={false}/>
+            <HeaderBar />
             <Book/>
         </>
     )

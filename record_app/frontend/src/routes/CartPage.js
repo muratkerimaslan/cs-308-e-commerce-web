@@ -6,7 +6,7 @@ const CartPage = () => {
     return(
         <>
             <HeaderBar/>
-            <CartList isInCart={true}/>
+            <CartList />
         </>
     )
 }
