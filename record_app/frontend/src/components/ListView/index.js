@@ -4,10 +4,10 @@ import "./ListView.css";
 import AddToCartButton from "../AddToCartButton";
 import { Link } from "react-router-dom";
 const ListView = ({Lgenre_target, Lsearch_term ='' }) => {
-    console.log("listgenre ) ");
-    console.log(Lgenre_target);
-    console.log("Lsearch_term");
-    console.log(Lsearch_term);
+    //console.log("listgenre ) ");
+    //console.log(Lgenre_target);
+    //console.log("Lsearch_term");
+    //console.log(Lsearch_term);
     const [books, setBooks] = useState([]);
     let db_adress = 'http://localhost:8000/books'
 
@@ -32,7 +32,7 @@ const ListView = ({Lgenre_target, Lsearch_term ='' }) => {
     }, [db_adress,Lgenre_target,Lsearch_term]);
 
     const useBooks = books.map((book) => {
-        console.log(book);
+        //console.log(book);
         const book_adress = '/Book/'+ book.book_id;
         return(
             <li key = {book.book_id}>
@@ -58,7 +58,7 @@ const ListView = ({Lgenre_target, Lsearch_term ='' }) => {
         )
     })
 
-    console.log(books);
+    //console.log(books);
 
     return(
     <>

@@ -6,6 +6,7 @@ import { useGlobalState } from "../../auth/global_state";
 
 const HeaderBar = ({home_search_term , setHomeSearchTerm} ) => { // home search term isn't used right now, as we only set its value, to pass to listview, we don't use its value inside headerbar
     const [{username}] = useGlobalState('user');
+    const [{user_id}] = useGlobalState('user');
     const [{numItems}] = useGlobalState('cart'); // from cart
     const [barSearchTerm, setBarSearchTerm] = useState('');
 
@@ -84,6 +85,21 @@ const HeaderBar = ({home_search_term , setHomeSearchTerm} ) => { // home search 
                 </>
             }
             
+
+            {
+                (user_id !== '' && user_id <= 2) ? 
+                <>
+                    <li> Product Manager {username} </li>
+                    <li> <Link to='/ProductManagerPage'> Manage Product </Link></li>
+                </>              
+                :
+                <></>
+            }
+
+            <li>
+                <Link to = '/Cart'> MyCart</Link><br/>
+                cart items = {numItems}
+            </li>
             
 
         </ul>
