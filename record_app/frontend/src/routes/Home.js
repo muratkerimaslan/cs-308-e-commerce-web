@@ -5,9 +5,9 @@ import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 //added the comment to test git push 2
 const Home = ({genre_target="All"}) => {
-    console.log("url params:");
+    //console.log("url params:");
     const { genre } = useParams();
-    console.log(genre);
+    //console.log(genre);
 
     const [homeSearchTerm, setHomeSearchTerm] = useState('');
     
@@ -15,11 +15,11 @@ const Home = ({genre_target="All"}) => {
         setHomeSearchTerm('');
     },[genre] )
 
-    console.log("Home search term");
-    console.log(homeSearchTerm);
+    //console.log("Home search term");
+    //console.log(homeSearchTerm);
     if (genre !== undefined)
     {
-        console.log("genre filter exists");
+        //console.log("genre filter exists");
         genre_target = genre; // change the prop passed down to ListVeiw
     } 
     return(

@@ -383,7 +383,7 @@ def createComment(request):
         user_id = user_instance,
         comment = data['comment'],
         rating = data['rating'],
-        is_visible = data['is_visible']
+        #is_visible = data['is_visible']
         #time_commented = models.DateTimeField() #commented out for future implementation
     )
     

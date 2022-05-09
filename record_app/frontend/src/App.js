@@ -6,6 +6,7 @@ import SignUp from './routes/SignUp.js';
 import Home from './routes/Home.js';
 import CartPage from './routes/CartPage';
 import BookPage from './routes/BookPage';
+import ProductManagerPage from './routes/ProductManagerPage';
 
 
 function App() {
@@ -16,6 +17,7 @@ function App() {
         <Route path='/Login' element = {<Login/>} />
         <Route path ='/SignUp' element = {<SignUp/>}/>
         <Route path ='/Cart' element = {<CartPage/>}/>
+        <Route path ='/ProductManagerPage' element = {<ProductManagerPage/>}/>
         <Route path="Book">
           <Route path=":bookId" element={<BookPage />} />
         </Route>

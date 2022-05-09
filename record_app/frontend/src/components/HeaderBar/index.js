@@ -1,4 +1,3 @@
-
 import { Link } from "react-router-dom";
 import './HeaderBar.css'
 import { useState } from "react";
@@ -6,8 +5,10 @@ import { useGlobalState } from "../../auth/global_state";
 
 const HeaderBar = ({home_search_term , setHomeSearchTerm} ) => {
     const [{username}] = useGlobalState('user');
+    const [{user_id}] = useGlobalState('user');
     const [{numItems}] = useGlobalState('cart'); // from cart
     const [barSearchTerm, setBarSearchTerm] = useState('');
+
     // console.log(username);
     // console.log("Cart items = ");
     // console.log(cartNumItems2);
@@ -65,6 +66,17 @@ const HeaderBar = ({home_search_term , setHomeSearchTerm} ) => {
                     <li> <Link to ='/SignUp'> SignUp </Link> </li>
                 </>
             }
+
+            {
+                (user_id !== '' && user_id <= 2) ? 
+                <>
+                    <li> Product Manager {username} </li>
+                    <li> <Link to='/ProductManagerPage'> Manage Product </Link></li>
+                </>              
+                :
+                <></>
+            }
+
             <li>
                 <Link to = '/Cart'> MyCart</Link><br/>
                 cart items = {numItems}
