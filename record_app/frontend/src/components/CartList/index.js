@@ -146,12 +146,11 @@ const CartList = () => {
     return(
         <>
             
-                {(cart.numItems === 0) ? <h3> Your cart is empty</h3>  : <> </>}
+                
             
             <br/>
-            <h2 style={{paddingLeft:'10px'}}>
-               Items in your cart:
-            </h2>
+            <h2 style={{paddingLeft:'10px'}}> {(cart.numItems === 0) ? 'Your cart is empty' : 'Items in your cart'}</h2>
+           
             <br/>
             <ul>
                 {
