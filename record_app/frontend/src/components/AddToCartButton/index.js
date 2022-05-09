@@ -1,6 +1,6 @@
 
 import { setGlobalCartNewQty,useGlobalState } from "../../auth/global_state";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 const AddToCartButton =  ({book, msg = "add to cart", init_qty = 1}) => {
 
@@ -73,7 +73,18 @@ const AddToCartButton =  ({book, msg = "add to cart", init_qty = 1}) => {
         alert('added to cart');
     }
 
-
+    // if (cart.Items_Id.hasOwnProperty(book.book_id) ){ // to set qty;
+    //     // delete if exists
+    //     if (qty !== cart.Items_Id[book.book_id]){
+    //         setQty(cart.Items_Id[book.book_id]);
+    //     }
+        
+    // }
+    useEffect( () =>
+    {
+        console.log("useEffect called");
+        setQty(cart.Items_Id[book.book_id]);
+    },[]);
 
     return(
     <> 
