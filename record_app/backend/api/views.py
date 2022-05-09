@@ -383,7 +383,6 @@ def createComment(request):
         user_id = user_instance,
         comment = data['comment'],
         rating = data['rating'],
-        #is_visible = data['is_visible']
         #time_commented = models.DateTimeField() #commented out for future implementation
     )
     
@@ -400,10 +399,10 @@ def updateVisibility(request,pk):
     comment = Comment.objects.get(comment_id = pk)
     comment.is_visible = True
 
-    book_instance = Book.objects.get(book_id=comment.book_id)
+    book_instance = Book.objects.get(book_id=comment.book_id.book_id)
     comment_amount = len(book_instance.comments.all())
-    book_instance.rating = (float(book_instance.rating * comment_amount) + comment.rating) / (comment_amount + 1)
-    
+    book_instance.rating = (float(book_instance.rating * comment_amount) + float(comment.rating)) / (comment_amount + 1)
+    print(f"book istance rating  = {book_instance.rating}" )
     book_instance.save()
     comment.save()
 

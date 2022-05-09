@@ -4,15 +4,17 @@
 import { setGlobalUserRecentlyLoggedIn,setGlobalCartRemoveBook,setGlobalCartNewQty ,useGlobalState, } from "../../auth/global_state";
 import axios from "axios";
 import AddToCartButton from "../AddToCartButton";
+import './CartList.css';
 import { useState } from "react";
 const CartList = () => {
     const [cart] = useGlobalState('cart');
     const [user] = useGlobalState('user');
+    // const [t]
     // const [loadedBooksDict, setLoadedBooksDict ] = useState([]);
     // console.log("user == " );
     // console.log(user);
-    // console.log("cart = ");
-    // console.log(cart);
+    console.log("cart = ");
+    console.log(cart);
     // if (user.username === ""){ // not signedin;
     //     console.log("cart without checking backend = ");
     //     console.log(cart);
@@ -104,44 +106,60 @@ const CartList = () => {
         handleDBDeleteFromCart(book_id);
 
     }
+
+  
    
     const CartListItems2 = Array.from(cart.Items.entries()).map((entry) => {
         const [key , val] = entry; // key = bookId, val = {book object , qty : 2}
         return(
-            <li>
-                <div>   
-                <p> id : {key}</p> 
-                <p> title : {val.book.title}</p> 
-                {
-                    
-                    (val.qty) > 1 ? <p> price : {val.book.price} * {val.qty} =  {parseInt(val.book.price) * parseInt(val.qty)}</p>
-                    : <p> price : {val.book.price} </p>
-                }
+            <li key = {val.book.book_id}>
+                <div className="my-cart-item">        
                 
-                <p> num : {val.qty}</p>
+                    <img
+                        alt = "URL not found"
+                        src = {val.book.image_link}   
+                        width="200"
+                        height="320"                
+                    />
+                    <h3 className="title">{val.book.title}</h3>            
+
+                <div className="descriptions">
+                    {
+                    
+                        (val.qty) > 1 ? <h3> total price : {val.book.price} * {val.qty} =  {parseInt(val.book.price) * parseInt(val.qty)}</h3>
+                        : <h3> total price : {val.book.price} </h3>
+                    }
+                    <h4>rating = {val.book.rating}</h4>
+                    <h4>{val.book.genre}</h4>
+                    <br/>
+                    <AddToCartButton book={val.book} msg={"update quantity"} init_qty={val.qty} />
+                    {/* &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; */}
+                    <button style={{float:'right'}} type="submit" onClick={ (e) => RemoveFromCart(e,key) } >
+                        remove from cart
+                    </button>
                 </div>
-                <AddToCartButton book={val.book} msg={"update quantity"} init_qty={val.qty} />
-                <button type="submit" onClick={ (e) => RemoveFromCart(e,key) } >
-                    remove
-                </button>
-            </li>)
+                </div>
+            </li>
+        )
 }
     )
     return(
         <>
-            <h1>
-                This is cart List:
-            </h1>
+            
+                {(cart.numItems === 0) ? <h3> Your cart is empty</h3>  : <> </>}
+            
             <br/>
-            <h2>
-                total_num = 
-                {cart.numItems}
-                <br/>
-                <ul>
-                    {CartListItems2}
-                </ul>
-              
+            <h2 style={{paddingLeft:'10px'}}>
+               Items in your cart:
             </h2>
+            <br/>
+            <ul>
+                {
+                }
+                {CartListItems2}
+            </ul>
+            
+           
          
         </>
     )
@@ -215,3 +233,23 @@ export default CartList;
            
 //         </li>
 //     )
+
+
+// carft items list return
+//return(
+        //     <li>
+        //         <div>   
+        //         <p> title : {val.book.title}</p> 
+        //         {
+                    
+        //             (val.qty) > 1 ? <p> price : {val.book.price} * {val.qty} =  {parseInt(val.book.price) * parseInt(val.qty)}</p>
+        //             : <p> price : {val.book.price} </p>
+        //         }
+                
+        //         <p> num : {val.qty}</p>
+        //         </div>
+        //         <AddToCartButton book={val.book} msg={"update quantity"} init_qty={val.qty} />
+        //         <button type="submit" onClick={ (e) => RemoveFromCart(e,key) } >
+        //             remove
+        //         </button>
+        //     </li>)

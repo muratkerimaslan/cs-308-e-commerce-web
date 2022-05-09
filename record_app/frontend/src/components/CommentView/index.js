@@ -20,10 +20,13 @@ const handleDB = (comment, rating, user_id) => {
       user_id: user_id,
       comment: comment,
       rating: rating,
-      is_visible: true
+      // is_visible: true
     })
     .then(function (response) {
         console.log(response.data)
+        alert("Comment Sent");
+        setComment('');
+        setRating('');
     })
     .catch(function (error) {
       console.log(error);
@@ -46,11 +49,11 @@ return (
 
         <form>
             <label>
-            <input type="text" placeholder = "Type to add a comment" onChange={e => setComment(e.target.value)} />
+            <input value={comment} type="text" placeholder = "Type to add a comment" onChange={e => setComment(e.target.value)} />
             </label>
             <label>
             <div/>
-            <input type="number" placeholder = "Enter rating " onChange={e => setRating(e.target.value)} />
+            <input value={rating} type="number" placeholder = "Enter rating " onChange={e => setRating(e.target.value)} />
             </label>
             <div>
             <button type="submit" onClick={onSubmitComment}>Submit</button>

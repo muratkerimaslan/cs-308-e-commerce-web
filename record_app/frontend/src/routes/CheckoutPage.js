@@ -1,14 +1,21 @@
 // import { useNavigate } from "react-router-dom";
 import { useGlobalState } from "../auth/global_state";
-import CartList from "../components/CartList";
+import { useState } from "react";
 // import { useEffect } from "react";
 import HeaderBar from "../components/HeaderBar";
+import CreditCard from "../components/CreditCard";
 
 const CheckoutPage = () => {
 
     const[user] = useGlobalState('user');
+    const [ccn,setCcn] = useState();
+    const [ccv,setCcv] = useState();
+    const [expMonth,setExpMonth] = useState();
+    const [expYear,setExpYear] = useState();
 
-    const qtyOptions = (first,last) => {
+
+
+    const YearMonthOptions = (first,last) => {
         const row = [];
         
         for (var i = first; i <= last;i++)
@@ -27,37 +34,7 @@ const CheckoutPage = () => {
             <h2> 
                 Enter your credit card info below 
             </h2>
-            <form>
-                <label>
-                    <p>Credit Card Number</p>
-                    <input type="text"  />
-                </label>
-                <label>
-                    <p>Security Code</p>
-                    <input type="text" />
-                </label>
-                <label>
-                    <p> Expiration Date <br/> <br/>
-                        <small> month</small>
-                        <small> year</small>
-                    </p>
-
-                    <select
-                        value={11}
-                        > 
-                            {qtyOptions(1,12)}
-                    </select>
-                    &nbsp;&nbsp;&nbsp; {/* to make space*/}
-                    <select
-                        value={11}
-                        > 
-                            {qtyOptions(22,40)}
-                    </select>
-                </label>
-                <div>
-                    <button type="submit" >Sign in</button>
-                </div>
-        </form>
+            <CreditCard/>
             
         </>
     )
@@ -65,6 +42,45 @@ const CheckoutPage = () => {
 
 
 export default CheckoutPage;
+// {/* <form>
+//                 <label>
+//                     <p>Credit Card Number</p>
+//                     <input type="text"  />
+//                 </label>
+//                 <label>
+//                     <p>Security Code</p>
+//                     <input type="text" />
+//                 </label>
+//                 <label>
+//                     <br/> <br/>
+//                     <h3> Expiration Date <br/> <br/>
+//                         <small> month</small>
+//                         <small> year</small>
+//                     </h3>
+
+//                     <select
+//                         value={expMonth}
+                        
+//                         > 
+//                             {YearMonthOptions(1,12)}
+//                     </select>
+//                     &nbsp;&nbsp;&nbsp; {/* to make space*/}
+//                     <select
+//                         value={expYear}
+//                         > 
+//                             {YearMonthOptions(22,40)}
+//                     </select>
+//                 </label>
+//                 <div>
+//                     <button type="submit" >Submit</button>
+//                 </div>
+//             </form> */}
+   // <select
+    //value={qty}
+    //onChange={e => setQty(e.target.value) }> 
+    //    {qtyOptions(book.stock_amount)}
+    //    {/* list of  <option value={i}>{i}</option> */} 
+    //</select>
 
 
     // THESE RESULT IN BAD USER EXPERIENCE, AS YOU CAN NOT GO BACK WITHOUT LOGGING IN, 

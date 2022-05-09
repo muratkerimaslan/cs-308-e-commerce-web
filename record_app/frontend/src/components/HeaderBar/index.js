@@ -26,7 +26,7 @@ const HeaderBar = ({home_search_term , setHomeSearchTerm} ) => { // home search 
     }
 
     //genres:
-    const genres = ["Fiction","Fantasy","Adventure","Science Fiction","Classics"];
+    const genres = ["Fiction","Fantasy","Adventure","Science Fiction","Classic"];
 
     // const flushSearches = (e) => // breaks the Login and Cart Global states somehow
     // {
@@ -54,13 +54,14 @@ const HeaderBar = ({home_search_term , setHomeSearchTerm} ) => { // home search 
             <li> <Link to='/'> Home </Link></li>
             { GenreListItems}
             <li>
-                <form onSubmit={searchSubmit}>
-                    {/* <label className="search-bar"> */}
-                    {/* <label htmlFor="search-bar"> Search Bar </label><br/> */}
-                    <input value={barSearchTerm} type="text" id="search-bar" placeholder="Search" onChange={(e) => setBarSearchTerm(e.target.value) }/>
-
-                    
-                </form>
+               
+    <               form onSubmit={searchSubmit}>
+    
+                        {/* <label className="search-bar"> */}
+                        {/* <label htmlFor="search-bar"> Search Bar </label><br/> */}
+                        <input value={barSearchTerm} type="text" id="search-bar" placeholder="Search" onChange={(e) => setBarSearchTerm(e.target.value) }/>
+                    </form>
+                
             </li>
 
             {
@@ -74,13 +75,13 @@ const HeaderBar = ({home_search_term , setHomeSearchTerm} ) => { // home search 
                 (current_adress.pathname === '/Cart') ?    // if is in CartPage
                 <li>  
                   <Link to = {(username === '') ? '/Login' : '/Checkout' }> Checkout</Link><br/>
-                  cart items = {numItems}
+                  <p style={{color:'rgb(17, 71, 121)', fontWeight:'700'}}> subtotal ({numItems} items) </p>
                 </li>  : 
                 // else
                 <>                 
                 <li>
                     <Link to = '/Cart'> MyCart</Link><br/>
-                    cart items = {numItems}
+                    <p style={{color:'rgb(17, 71, 121)', fontWeight:'700'}}> subtotal ({numItems} items) </p>
                 </li>  
                 </>
             }
@@ -95,12 +96,6 @@ const HeaderBar = ({home_search_term , setHomeSearchTerm} ) => { // home search 
                 :
                 <></>
             }
-
-            <li>
-                <Link to = '/Cart'> MyCart</Link><br/>
-                cart items = {numItems}
-            </li>
-            
 
         </ul>
         </div>

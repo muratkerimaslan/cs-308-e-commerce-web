@@ -32,6 +32,9 @@ const ListView = ({Lgenre_target, Lsearch_term ='' }) => {
     }, [db_adress,Lgenre_target,Lsearch_term]);
 
     const useBooks = books.map((book) => {
+        if (book.genre !== Lgenre_target && Lgenre_target !== 'All') {
+            return ( <></>)
+        }
         //console.log(book);
         const book_adress = '/Book/'+ book.book_id;
         return(

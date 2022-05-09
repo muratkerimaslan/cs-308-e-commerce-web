@@ -70,23 +70,31 @@ const AddToCartButton =  ({book, msg = "add to cart", init_qty = 1}) => {
             }
             handleDBAddToCart(book.book_id,parseInt(qty));
         }
-        
+        alert('added to cart');
     }
 
 
+
     return(
-    <form>
-    <label >quantity</label>
-        <select
-            value={qty}
-            onChange={e => setQty(e.target.value) }> 
-                {qtyOptions(book.stock_amount)}
-                {/* list of  <option value={i}>{i}</option> */} 
-        </select>
-        <button type="submit" onClick={addToCartAmount}> 
-            {msg}
-        </button>
-    </form>
+    <> 
+        {
+            (book.stock_amount > 0) ?
+            <form>
+        <label >qty</label>
+            <select
+                value={qty}
+                onChange={e => setQty(e.target.value) }> 
+                    {qtyOptions(book.stock_amount)}
+                    {/* list of  <option value={i}>{i}</option> */} 
+            </select>
+            <button type="submit" onClick={addToCartAmount}> 
+                {msg}
+            </button>
+        </form>
+        :
+        <p style={{color:'red'}}> Not in Stock</p>
+        }
+    </>
     )
 
 }
