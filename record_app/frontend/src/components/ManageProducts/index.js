@@ -8,6 +8,7 @@ const ManageProducts = () => {
     const [books, setBooks] = useState([]);
     const [submissionCount,setSubmissionCount] = useState(0);
     const [newStocks, setNewStocks] = useState(); // {bookid : new_stock}
+    const [newBook, setNewBook] = useState();
     useEffect(() => { // for comments;
         const handleDB = () => {
             axios.get('http://localhost:8000/books/') // invisible comments
@@ -30,9 +31,96 @@ const ManageProducts = () => {
             .catch(function (error) {
               console.log(error);
             });
+            setSubmissionCount(prevSubmissionCount => prevSubmissionCount + 1);
+
         
     }
+    const onNewStockSubmit = (e,book) => {
+        e.preventDefault();
+        axios.put('http://localhost:8000/books/update/'+ book.book_id, {
+          stock_amount : newStocks[book.book_id]
+        })
+        .then(function (response) { // probably response.data[0] = {is_authenticated and user_id};
+            console.log(response)
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+        setSubmissionCount(prevSubmissionCount => prevSubmissionCount + 1);
+    }
     
+    const onSubmitBook = (e) => {
+        e.preventDefault();
+        console.log('asdasd');
+        axios.post('http://localhost:8000/books/create/', {
+          title: newBook.title,
+          author_id: newBook.author_id,
+          image_link: newBook.image_link,
+          publisher: newBook.publisher,
+          publisher_year: newBook.publisher_year, 
+          genre: newBook.genre,
+          price: newBook.price,
+          description: newBook.description
+        })
+        .then(function (response) { // probably response.data[0] = {is_authenticated and user_id};
+            console.log(response)
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+        setSubmissionCount(prevSubmissionCount => prevSubmissionCount + 1);
+
+    }
+
+    const AddBookForm = () => {
+        
+        return (
+            <li style={{float:'right'}}>
+                
+                <form>
+                    <label>
+                    <p>Title</p>
+                    <input type="text" required   style={{background: 'rgb(158, 215, 125)'  }} onChange={(e) => setNewBook( { ...newBook, 'title' : e.target.value })} />
+                    </label>
+                    <label>
+                    <p>Author ID</p> {/* author name */ }
+                    <input type="text" required style={{background: 'rgb(158, 215, 125)'  }} onChange={e => setNewBook( { ...newBook, 'author_id' : e.target.value })} />
+                    </label>
+                    <label>
+                    <p>Image Link</p>
+                    <input type="text" required style={{background: 'rgb(158, 215, 125)'  }} onChange={e => setNewBook( { ...newBook, 'image_link' : e.target.value })} />
+                    </label>
+                    <label>
+                    <p>Genre</p>
+                    <input type="text" required style={{background: 'rgb(158, 215, 125)'  }} onChange={e => setNewBook( { ...newBook, 'genre' : e.target.value })} />
+                    </label>
+                    <label>
+                    <p>Publisher</p>
+                    <input type="text" required  style={{background: 'rgb(158, 215, 125)'  }} onChange={e => setNewBook( { ...newBook, 'publisher' : e.target.value })} />
+                    </label>
+                    <label>
+                    <p>Publisher Year</p>
+                    <input type="text" required style={{background: 'rgb(158, 215, 125)'  }} onChange={e => setNewBook( { ...newBook, 'publisher_year' : e.target.value })} />
+                    </label>
+                    <label>
+                    <p>Description</p>
+                    <input type="text" required style={{background: 'rgb(158, 215, 125)'  }} onChange={e => setNewBook( { ...newBook, 'description' : e.target.value })} />
+                    </label>
+                    <label>
+                    <p>Price</p>
+                    <input type="text" required style={{background: 'rgb(158, 215, 125)'  }} onChange={e => setNewBook( { ...newBook, 'price' : e.target.value })} />
+                    </label>
+                    
+                    
+                    <div>
+                        <button type="submit" onClick={onSubmitBook}>Add book</button>
+                    </div>
+                </form> 
+
+                
+            </li>
+        )
+    }
 
     const useBooks = books.map((book) => {
         
@@ -63,15 +151,13 @@ const ManageProducts = () => {
                     </h3>
                     <form>
                         <label>
-                        <p>Enter new stock amount</p>
-                        <input type="number"  value={book.stock_amount} style={{background: 'rgb(158, 215, 125)' }} onChange={e => setNewStocks( { ...newStocks, [book.book_id] : e.target.value })} />
+                        <p>Enter new stock amount:</p>
+                        <input type="number"  placeholder={book.stock_amount} style={{background: 'rgb(158, 215, 125)'  }} onChange={e => setNewStocks( { ...newStocks, [book.book_id] : e.target.value })} />
                         </label>
                        
                         <div>
-                        <button type="submit" onClick={(e) => {
-                            e.preventDefault();
-                            console.log(newStocks);
-                        }}>Set stock</button>
+                            <button type="submit" onClick={(e) => {onNewStockSubmit(e,book)}}
+                            >Set stock</button>
                         </div>
                     </form>
                     <button style={{}} onClick={(e) => RemoveBook(e,book)}>
@@ -110,9 +196,11 @@ const ManageProducts = () => {
         
     //   }
     
-    return (
+    return ( // {<li style={{float:'right'}}> a </li>}
         <>
             <ul className="comment-list">
+                 
+                {AddBookForm()} 
                 {useBooks}
             </ul>
             {
@@ -121,6 +209,8 @@ const ManageProducts = () => {
                 :
                 <p> Can't read books from the database</p>
             }
+
+        
             
         </>
     )
