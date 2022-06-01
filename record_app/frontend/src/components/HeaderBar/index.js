@@ -91,7 +91,8 @@ const HeaderBar = ({home_search_term , setHomeSearchTerm} ) => { // home search 
                 (user_id !== '' && user_id <= 2) ? 
                 <>
                     <li> Product Manager {username} </li>
-                    <li> <Link to='/ProductManagerPage'> Manage Product </Link></li>
+                    <li> <Link to='/ManageCommentsPage'> Manage Comments </Link></li>
+                    <li> <Link to='/ManageProductsPage'> Manage Products </Link></li>
                 </>              
                 :
                 <></>

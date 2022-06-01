@@ -3,7 +3,7 @@ import ManageComments from "../components/ManageComments";
 
 
 
-const ProductManagerPage = () => {
+const ManageCommentsPage = () => {
 
 
 
@@ -17,4 +17,4 @@ const ProductManagerPage = () => {
 }
 
 
-export default ProductManagerPage;
+export default ManageCommentsPage;

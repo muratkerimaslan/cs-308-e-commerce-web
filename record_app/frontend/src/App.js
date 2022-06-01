@@ -7,7 +7,8 @@ import Home from './routes/Home.js';
 import CartPage from './routes/CartPage';
 import BookPage from './routes/BookPage';
 import CheckoutPage from './routes/CheckoutPage';
-import ProductManagerPage from './routes/ProductManagerPage';
+import ManageCommentsPage from './routes/ManageCommentsPage';
+import ManageProductsPage from './routes/ManageProductsPage';
 
 
 function App() {
@@ -18,7 +19,8 @@ function App() {
         <Route path='/Login' element = {<Login/>} />
         <Route path ='/SignUp' element = {<SignUp/>}/>
         <Route path ='/Cart' element = {<CartPage/>}/>
-        <Route path ='/ProductManagerPage' element = {<ProductManagerPage/>}/>
+        <Route path ='/ManageCommentsPage' element = {<ManageCommentsPage/>}/>
+        <Route path ='/ManageProductsPage' element = {<ManageProductsPage/>}/>
         <Route path="Book">
           <Route path=":bookId" element={<BookPage />} />
         </Route>

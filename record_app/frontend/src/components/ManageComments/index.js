@@ -76,7 +76,13 @@ const ManageComments = () => {
             <ul className="comment-list">
                 {useComments}
             </ul>
-            <button type="submit" onClick={onSubmitCheck}>Submit</button>
+            {
+                (comments.length != 0 )?
+                <button type="submit" onClick={onSubmitCheck}>Submit</button>
+                :
+                <p> There are no comments to be viewed </p>
+            }
+            
         </>
     )
 
