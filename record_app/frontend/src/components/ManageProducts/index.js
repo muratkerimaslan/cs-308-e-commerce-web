@@ -204,7 +204,7 @@ const ManageProducts = () => {
                 {useBooks}
             </ul>
             {
-                (books.length != 0 )?
+                (books.length !== 0 )?
                 <> </>
                 :
                 <p> Can't read books from the database</p>
