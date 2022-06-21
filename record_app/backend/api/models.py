@@ -1,5 +1,6 @@
 from cgi import print_exception
 from datetime import datetime
+from email.policy import default
 from tkinter import CASCADE
 from unicodedata import category
 from django.db import models
@@ -10,9 +11,17 @@ from django.db import models
 class Cart(models.Model):
     cart_id = models.AutoField(primary_key=True, auto_created=True)
     total = models.FloatField(default=0)
+    total_revenue = models.FloatField(default=0)
 
     def __str__(self):
         return "Cart " + str(self.cart_id)
+
+class Wishlist(models.Model):
+    
+    wishlist_id = models.AutoField(primary_key=True, auto_created=True)
+
+    def __str__(self):
+        return "Wishlist " + str(self.wishlist_id)
 
 class User(models.Model):
     
@@ -21,6 +30,7 @@ class User(models.Model):
     password = models.TextField(default="1234")
     email = models.TextField(default="onbalikli@mail.com")
     cart = models.OneToOneField(Cart, on_delete=models.CASCADE, related_name="user")
+    wishlist = models.OneToOneField(Wishlist, on_delete=models.CASCADE, related_name="user")
 
     updated = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(auto_now_add=True)
@@ -74,6 +84,9 @@ class Comment(models.Model):
     is_visible = models.BooleanField(default=False)
     #time_commented = models.DateTimeField() #commented out for future implementation
 
+    def __str__(self):
+        return self.comment[0:50]
+
 class Cart_Item(models.Model):
     item_id = models.AutoField(primary_key=True, auto_created=True)
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name="cart_items")
@@ -85,14 +98,26 @@ class Cart_Item(models.Model):
     arrival_price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
 
     def __str__(self):
-        return "Cart Item" + str(self.item_id)
+        return "Cart Item" + str(self.item_id) + str(self.book.name)
+
+class Wishlist_Item(models.Model):
+    item_id = models.AutoField(primary_key=True, auto_created=True)
+    cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name="wishlist_items")
+    book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name="wishlist_items")
+
+    def __str__(self):
+        return "Wishlist Item" + str(self.item_id)
 
 class Order(models.Model):
     order_id = models.AutoField(primary_key=True, auto_created=True)
     user_id = models.ForeignKey(User, on_delete=models.CASCADE) #check this one for multiple foreign keys
     date = models.DateTimeField(auto_now=True)
     status = models.TextField(default='Processing')
-    revenue = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    total = models.FloatField(default=0)
+    total_revenue = models.FloatField(default=0)
+
+    def __str__(self):
+        return "Order" + str(self.order_id)
 
 class Order_Item(models.Model):
     item_id = models.AutoField(primary_key=True, auto_created=True)
@@ -105,4 +130,4 @@ class Order_Item(models.Model):
     arrival_price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
 
     def __str__(self):
-        return "Order Item" + str(self.item_id)
+        return "Order Item" + str(self.item_id) + str(self.book.name)
