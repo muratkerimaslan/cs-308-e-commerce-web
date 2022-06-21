@@ -156,6 +156,8 @@ def createBook(request):
         publisher_year = data['publisher_year'],
         description = data['description'],
         price = data['price'],
+        
+        arrival_price = data['arrival_price'] # Yeni Eklendi
     )
 
     if data.get('in_stock') is not None:
@@ -205,6 +207,9 @@ def updateBook(request, pk):
         
     if data.get('image_link') is not None:
         book.image_link = data['image_link']
+    
+    if data.get('arrival_price') is not None:
+        book.arrival_price = data['arrival_price']
 
     book.save()
     serializer = BookSerializer(book, many=False)
@@ -466,3 +471,16 @@ def getBooksByGenre(request,pk):
 #rating girme
 
 #pm visibility changer
+
+
+
+# Sales Manager Functions
+
+# price update
+
+# discount 
+
+#
+
+
+# -----------------------

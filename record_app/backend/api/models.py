@@ -23,6 +23,8 @@ class User(models.Model):
 
     updated = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(auto_now_add=True)
+    
+    #tax_id = models.TextField()
 
     def __str__(self):
         return self.name[0:50]
@@ -55,6 +57,7 @@ class Book(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     in_stock = models.BooleanField(default=True)
     description = models.TextField(default='')
+    arrival_price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
 
     def __str__(self):
         return self.title[0:50]
