@@ -1,10 +1,11 @@
 from turtle import isvisible
 from urllib import response
+from datetime import datetime
 from django.shortcuts import render
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from .serializers import CommentSerializer, UserSerializer, BookSerializer, AuthorSerializer, CartSerializer, Cart_ItemSerializer
-from .models import User, Book, Comment, Author, Cart, Cart_Item
+from .serializers import CommentSerializer, UserSerializer, BookSerializer, AuthorSerializer, CartSerializer, Cart_ItemSerializer, OrderSerializer, Order_ItemSerializer
+from .models import User, Book, Comment, Author, Cart, Cart_Item, Order, Order_Item
 #from record_app.backend.api import serializers
 
 @api_view(['GET'])
@@ -156,6 +157,8 @@ def createBook(request):
         publisher_year = data['publisher_year'],
         description = data['description'],
         price = data['price'],
+
+        arrival_price = data['arrival_price'] # Yeni Eklendi
     )
 
     if data.get('in_stock') is not None:
@@ -205,6 +208,9 @@ def updateBook(request, pk):
         
     if data.get('image_link') is not None:
         book.image_link = data['image_link']
+
+    if data.get('arrival_price') is not None:
+        book.arrival_price = data['arrival_price']
 
     book.save()
     serializer = BookSerializer(book, many=False)
@@ -341,8 +347,22 @@ def checkout(request, pk):
             enough_in_stock = False
     
     if enough_in_stock:
+        order = Order.objects.create(
+            user_id = pk
+        )
+
+        order_id = order.order_id
+
         for item in cart_items.iterator():
             item.book.stock_amount -= item.amount
+
+            order_item = Order_Item.objects.create(
+                order = order_id,
+                book = item.book,
+                price = item.price,
+                amount = item.amount
+            )            
+
             item.book.save()
             item.delete()
 

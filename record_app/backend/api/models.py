@@ -1,4 +1,5 @@
 from cgi import print_exception
+from datetime import datetime
 from tkinter import CASCADE
 from unicodedata import category
 from django.db import models
@@ -52,9 +53,12 @@ class Book(models.Model):
     rating = models.DecimalField(max_digits=3, decimal_places=1, default=0)
     #image = models.ImageField(upload_to='images/')   # uncomment this later on when you will add photos of the book
     image_link = models.TextField(default='')
+    original_price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    discount_rate = models.FloatField(default=1)
     in_stock = models.BooleanField(default=True)
     description = models.TextField(default='')
+    arrival_price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
 
     def __str__(self):
         return self.title[0:50]
@@ -72,32 +76,31 @@ class Cart_Item(models.Model):
     item_id = models.AutoField(primary_key=True, auto_created=True)
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name="cart_items")
     book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name="cart_items")
-    price = models.DecimalField(max_digits=10, decimal_places=2)
+    original_price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    discount_rate = models.FloatField(default=1)
     amount = models.IntegerField(default=1)
+    arrival_price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
 
     def __str__(self):
         return "Cart Item" + str(self.item_id)
 
-
-
-
+class Order(models.Model):
+    order_id = models.AutoField(primary_key=True, auto_created=True)
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE) #check this one for multiple foreign keys
+    date = models.DateTimeField(auto_now=True)
+    status = models.TextField(default='Processing')
+    revenue = models.DecimalField(max_digits=10, decimal_places=2, default=0)
 
 class Order_Item(models.Model):
-    book = models.OneToOneField(Book, on_delete=models.SET_NULL, null=True)
-    
-    pass
+    item_id = models.AutoField(primary_key=True, auto_created=True)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="order_items")
+    book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name="order_items")
+    original_price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    discount_rate = models.FloatField(default=1)
+    amount = models.IntegerField(default=1)
+    arrival_price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
 
-
-
-class Order(models.Model):
-
-    pass
-
-
-
-
-'''class Writes(models.Model):
-    writes_id = models.AutoField(primary_key=True, auto_created=True)
-    book = models.ForeignKey(Book, on_delete=models.CASCADE)
-    author = models.ForeignKey(Author, on_delete=models.CASCADE)
-'''
+    def __str__(self):
+        return "Order Item" + str(self.item_id)
