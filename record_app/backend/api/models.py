@@ -91,11 +91,9 @@ class Cart_Item(models.Model):
     item_id = models.AutoField(primary_key=True, auto_created=True)
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name="cart_items")
     book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name="cart_items")
-    original_price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
-    price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
-    discount_rate = models.FloatField(default=1)
     amount = models.IntegerField(default=1)
-    arrival_price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    revenue = models.DecimalField(max_digits=10, decimal_places=2, default=0)
 
     def __str__(self):
         return "Cart Item" + str(self.item_id) + str(self.book.name)
@@ -113,8 +111,8 @@ class Order(models.Model):
     user_id = models.ForeignKey(User, on_delete=models.CASCADE) #check this one for multiple foreign keys
     date = models.DateTimeField(auto_now=True)
     status = models.TextField(default='Processing')
-    total = models.FloatField(default=0)
-    total_revenue = models.FloatField(default=0)
+    total = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    total_revenue = models.DecimalField(max_digits=10, decimal_places=2, default=0)
 
     def __str__(self):
         return "Order" + str(self.order_id)
@@ -123,11 +121,9 @@ class Order_Item(models.Model):
     item_id = models.AutoField(primary_key=True, auto_created=True)
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="order_items")
     book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name="order_items")
-    original_price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
-    discount_rate = models.FloatField(default=1)
     amount = models.IntegerField(default=1)
-    arrival_price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    revenue = models.DecimalField(max_digits=10, decimal_places=2, default=0)
 
     def __str__(self):
         return "Order Item" + str(self.item_id) + str(self.book.name)

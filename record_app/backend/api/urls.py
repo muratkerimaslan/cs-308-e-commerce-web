@@ -35,6 +35,8 @@ urlpatterns = [
     path('deleteCartItem/<str:b_pk>/<str:u_pk>', views.deleteCartItem),
     path('updateCartItem/<str:b_pk>/<str:u_pk>', views.updateCartItem),
     path('checkout/<str:pk>', views.checkout),
+    path('refund/<str:pk>', views.refund),
+
 
     path('getWishlistItems/<str:pk>/', views.getWishlistItems),
     path('addWishlistItem/<str:pk>', views.addWishlistItem),
@@ -57,5 +59,8 @@ urlpatterns = [
     path('getBooksByGenre/<str:pk>/', views.getBooksByGenre),
 
     path('getOrders/<str:pk>/', views.getOrders),
-    path('getOrder30/<str:pk>/', views.getOrder30)
+    path('getOrder30/<str:pk>/', views.getOrder30),
+
+    path('updateOrderStatus/<str:pk>', views.updateOrderStatus),
+    path('getRevenueByDate/<str:pk>', views.getRevenueByDate)
 ]

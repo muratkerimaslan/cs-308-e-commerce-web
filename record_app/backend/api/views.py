@@ -1,9 +1,12 @@
 from turtle import isvisible
 from urllib import response
-from datetime import datetime
+from datetime import date, datetime
 from django.shortcuts import render
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from sympy import true
+
+from backend import api
 from .serializers import CommentSerializer, UserSerializer, BookSerializer, AuthorSerializer, CartSerializer, Cart_ItemSerializer, WishlistSerializer, Wishlist_ItemSerializer, OrderSerializer, Order_ItemSerializer
 from .models import User, Book, Comment, Author, Cart, Cart_Item, Order, Order_Item, Wishlist, Wishlist_Item
 #from record_app.backend.api import serializers
@@ -156,6 +159,7 @@ def createBook(request):
         publisher = data['publisher'],
         publisher_year = data['publisher_year'],
         description = data['description'],
+        original_price = data['price'],
         price = data['price'],
         arrival_price = data['arrival_price'] # Yeni Eklendi
     )
@@ -211,9 +215,6 @@ def updateBook(request, pk):
     if data.get('image_link') is not None:
         book.image_link = data['image_link']
     
-    if data.get('arrival_price') is not None:
-        book.arrival_price = data['arrival_price']
-
     if data.get('arrival_price') is not None:
         book.arrival_price = data['arrival_price']
 
@@ -275,8 +276,10 @@ def addCartItem(request, pk):
             cart = temp_cart,
             book = temp_book,
             amount = data['amount'],
-            price = temp_book.price * data['amount']
+            price = temp_book.price * data['amount'],
+            revenue = (temp_book.price - temp_book.arrival_price) * data['amount']
         )
+        temp_cart.total_revenue += cart_item.revenue
         temp_cart.total += float(temp_book.price * temp_book.stock_amount)
         temp_cart.save()
         serializer = Cart_ItemSerializer(cart_item, many=False)
@@ -295,6 +298,11 @@ def deleteCartItem(request, b_pk, u_pk):
         if item.book == book:
             i_pk = item.item_id
     item = Cart_Item.objects.get(item_id=i_pk)
+
+    user.cart.total -= item.price
+    user.cart.revenue -= item.revenue
+    user.cart.save()
+
     item.delete()
     return Response('Cart Item was deleted!')
 
@@ -322,9 +330,17 @@ def updateCartItem(request, b_pk, u_pk):
             ]
             return Response(response)
         else:
+            user.cart.total -= item.price
+            user.cart.revenue -= item.revenue
+
+            item.revenue = (item.book.price - item.book.arrival_price) * data['amount']
             item.amount = data['amount']
             item.price = item.book.price * item.amount
             item.save()
+
+            user.cart.total += item.price
+            user.cart.revenue += item.revenue
+            user.cart.save()
 
     serializer = Cart_ItemSerializer(item, many=False)
     return Response(serializer.data)
@@ -355,11 +371,20 @@ def checkout(request, pk):
                 order = order_id,
                 book = item.book,
                 price = item.price,
-                amount = item.amount
-            )            
+                amount = item.amount,
+                revenue = item.revenue
+            )
 
             item.book.save()
             item.delete()
+
+        # deneme
+
+        order_items = order.order_items.all()
+        for o_item in order_items.iterator():
+            order.total_revenue += o_item.revenue
+        
+        order.save()
 
         response = [
             {
@@ -373,6 +398,23 @@ def checkout(request, pk):
             }
         ]
     return Response(response)
+
+
+# Refund Function
+# Needs order_id as pk
+@api_view(['GET'])
+def refund(request, pk):
+    order = Order.objects.get(order_id=pk)
+    order_items = order.order_items.all()
+
+    for item in order_items.iterator():
+        if (item.book.stock_amount == 0):
+            item.book.in_stock = True
+        item.book.stock_amount += item.amount
+        item.book.save()
+
+    order.status = "Refunded"
+    order.save()
 
 # Wishlist view functions
 
@@ -478,7 +520,7 @@ def updateVisibility(request,pk):
     comment.is_visible = True
 
     book_instance = Book.objects.get(book_id=comment.book_id.book_id)
-    comment_amount = len(book_instance.comments.all())
+    comment_amount = len(Comment.objects.filter(book_id = pk, is_visible = True))
     book_instance.rating = (float(book_instance.rating * comment_amount) + float(comment.rating)) / (comment_amount + 1)
     print(f"book istance rating  = {book_instance.rating}" )
     book_instance.save()
@@ -564,8 +606,40 @@ def getOrders(request, pk):
 @api_view(['GET']) 
 def getOrder30(request):
     current_time = datetime.now()
-    orders = Order.objects.filter((current_time - date).days() < 30)
+    orders = Order.objects.filter(date - current_time < 30)
     serializer = OrderSerializer(orders, many=True)
     return Response(serializer.data)
 
+# update order
+@api_view(['POST'])
+def updateOrderStatus(request, pk):
+    order = Order.objects.get(order_id=pk)
+    data = request.data
+    if data.get('status') is not None:
+        order.status = data['status']
+    
+    order.save()
+    serializer = AuthorSerializer(order, many=False)
+    return Response(serializer.data)
+
 # -----------------------
+
+@api_view(['GET']) 
+def getRevenueByDate(request, pk):
+    input_days = int(pk)
+    today = datetime.date.today()
+    until_date = today - datetime.timedelta(days=input_days)
+    orders = Order.objects.filter(entered__gte=until_date)
+    interval_revenue = 0
+
+    for order in orders.iterator():
+        interval_revenue += order.total_revenue
+
+    response = [
+            {
+                'interval_revenue' : interval_revenue
+            }
+        ]
+
+
+    return Response(response)
