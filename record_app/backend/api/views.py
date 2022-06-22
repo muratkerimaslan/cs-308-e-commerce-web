@@ -4,8 +4,8 @@ from datetime import datetime
 from django.shortcuts import render
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from .serializers import CommentSerializer, UserSerializer, BookSerializer, AuthorSerializer, CartSerializer, Cart_ItemSerializer, OrderSerializer, Order_ItemSerializer
-from .models import User, Book, Comment, Author, Cart, Cart_Item, Order, Order_Item
+from .serializers import CommentSerializer, UserSerializer, BookSerializer, AuthorSerializer, CartSerializer, Cart_ItemSerializer, WishlistSerializer, Wishlist_ItemSerializer, OrderSerializer, Order_ItemSerializer
+from .models import User, Book, Comment, Author, Cart, Cart_Item, Order, Order_Item, Wishlist, Wishlist_Item
 #from record_app.backend.api import serializers
 
 @api_view(['GET'])
@@ -166,6 +166,9 @@ def createBook(request):
     if data.get('stock_amount') is not None:
         book.stock_amount = data['stock_amount']
 
+    if data.get('discount_rate') is not None:
+        book.discount_rate = data['discount_rate']
+
     book.save()
     serializer = BookSerializer(book, many=False)
     return Response(serializer.data)
@@ -214,6 +217,10 @@ def updateBook(request, pk):
     if data.get('arrival_price') is not None:
         book.arrival_price = data['arrival_price']
 
+    if data.get('discount_rate') is not None:
+        book.discount_rate = data['discount_rate']
+    
+    book.price = book.original_price * book.discount_rate
     book.save()
     serializer = BookSerializer(book, many=False)
     return Response(serializer.data)
@@ -223,11 +230,6 @@ def deleteBook(request, pk):
     book = Book.objects.get(book_id=pk)
     book.delete()
     return Response('Book has been deleted!')
-
-'''
-def front(request):
-    context = { }
-    return render(request, "index.html", context)'''
 
 # Cart view functions
 
@@ -279,15 +281,6 @@ def addCartItem(request, pk):
         temp_cart.save()
         serializer = Cart_ItemSerializer(cart_item, many=False)
         return Response(serializer.data)
-
-
-'''{
-    "item_id": 3,
-    "price": "2250.00",
-    "amount": 150,
-    "cart_id": 1,
-    "book": 2
-}'''
 
 # Primary key of Cart_Item is needed
 # Primary key of Book is needed
@@ -381,6 +374,71 @@ def checkout(request, pk):
         ]
     return Response(response)
 
+# Wishlist view functions
+
+# Primary key of User is needed
+@api_view(['GET'])
+def getWishlistItems(request, pk):
+    wishlist = User.objects.get(user_id=pk).wishlist
+    wishlist_items = wishlist.wishlist_items.all()
+    serializer = Wishlist_ItemSerializer(wishlist_items, many=True)
+    return Response(serializer.data)
+
+# Primary key of Cart_Item is needed
+@api_view(['GET'])
+def getWishlistItem(request, b_pk, u_pk):
+    #cart = Cart.objects.get(user_id=pk1)
+    book = Book.objects.get(book_id = b_pk)
+    wishlist_items = book.wishlist_items.all()
+    i_pk = 0
+    for item in wishlist_items.iterator():
+        if item.wishlist.user.user_id == u_pk:
+            i_pk = item.item_id
+    wishlist_item = Wishlist_Item.objects.get(item_id=i_pk)
+    serializer = Wishlist_ItemSerializer(wishlist_item, many=False)
+    return Response(serializer.data)
+
+# Primary key of User is needed
+@api_view(['POST'])
+def addWishlistItem(request, pk):
+    temp_wishlist = User.objects.get(user_id=pk).wishlist
+    data = request.data
+    temp_book = Book.objects.get(book_id=data['book_id'])
+
+    # Amount check (check amount <= stock_amount)
+    if temp_book.stock_amount == 0:
+        response = [
+            {
+                'body' : 'Book is out of stock'
+            }
+        ]
+        return Response(response)
+    else:
+        wishlist_item = Wishlist_Item.objects.create(
+            wishlist = temp_wishlist,
+            book = temp_book
+        )
+        serializer = Wishlist_ItemSerializer(wishlist_item, many=False)
+        return Response(serializer.data)
+
+# Primary key of Wishlist_Item is needed
+# Primary key of Book is needed
+@api_view(['DELETE'])
+def deleteWishlistItem(request, b_pk, u_pk):
+    user = User.objects.get(user_id = u_pk)
+    wishlist_items = user.wishlist.wishlist_items.all()
+    book = Book.objects.get(book_id = b_pk)
+    #cart_items = book.cart_items.all()
+    i_pk = 0
+    for item in wishlist_items.iterator():
+        if item.book == book:
+            i_pk = item.item_id
+    item = Wishlist_Item.objects.get(item_id=i_pk)
+    item.delete()
+    return Response('Wishlist Item was deleted!')
+
+# No update function for wishlist item, wasn't meaningful
+
 # Comment view functions
 
 #give all comments
@@ -389,8 +447,6 @@ def getComments(request, pk):
     comments = Comment.objects.filter(book_id = pk, is_visible = True)
     serializer = CommentSerializer(comments, many=True)
     return Response(serializer.data)
-
-
 
 #publish a new comment
 @api_view(['POST'])
@@ -497,7 +553,19 @@ def getBooksByGenre(request,pk):
 
 # discount 
 
-#
+# gets all the orders of one user
+@api_view(['GET']) 
+def getOrders(request, pk):
+    orders = Order.objects.get(user_id=pk)
+    serializer = OrderSerializer(orders, many=True)
+    return Response(serializer.data)
 
+# get all the orders within 30 days
+@api_view(['GET']) 
+def getOrder30(request):
+    current_time = datetime.now()
+    orders = Order.objects.filter((current_time - date).days() < 30)
+    serializer = OrderSerializer(orders, many=True)
+    return Response(serializer.data)
 
 # -----------------------

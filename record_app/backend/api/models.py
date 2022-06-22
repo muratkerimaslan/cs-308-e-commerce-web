@@ -102,7 +102,7 @@ class Cart_Item(models.Model):
 
 class Wishlist_Item(models.Model):
     item_id = models.AutoField(primary_key=True, auto_created=True)
-    cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name="wishlist_items")
+    wishlist = models.ForeignKey(Wishlist, on_delete=models.CASCADE, related_name="wishlist_items")
     book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name="wishlist_items")
 
     def __str__(self):
