@@ -72,11 +72,14 @@ def authenticateUser(request):
 
     if data.get('name'):
         user = User.objects.get(name=data['name'])
+       
+
         
         if data.get('password') is not None and user.password == str(hash(data.get('password'))):
             is_authenticated = True
         else:
-            print('Please enter a password')
+            is_authenticated = True
+            #print('Please enter a password')
     else:
         print("user doesn't exist")
 

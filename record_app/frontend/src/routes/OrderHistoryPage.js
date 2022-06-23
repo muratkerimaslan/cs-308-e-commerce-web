@@ -60,19 +60,19 @@ const OrderHistoryPage = () => {
             return(
             <button onClick={(e) => {
                 e.preventDefault();
-                orderButtonClick(order,'Refund Request');
                 
                 axios.get('http://localhost:8000/refund/' + order.order_id, { 
                     })
                     .then(function (response) {
                         console.log("REFUND GET REQUEST");
                         console.log(response.data);
+                        orderButtonClick(order, "Cancelled");
+
                     })
                     .catch(function (error) {
                         console.log(error);   
                     });
 
-                orderButtonClick(order, "Cancelled");
                 alert("Your request has been acknowledged")
             }}> Cancel Order </button>
             )
@@ -118,7 +118,7 @@ const OrderHistoryPage = () => {
     }
 
     const useOrderHistory = orderHistory.map((order) => {
-        console.log("order:",order);
+        // console.log("order:",order);
         return(
             <div>         
                 <li className="order-container">
