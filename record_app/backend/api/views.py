@@ -31,12 +31,8 @@ def createUser(request):
     
     temp_user = User.objects.create(
         name = data['name'],
-<<<<<<< HEAD
-        password = data['password'] 
-=======
         password = str(hash(data['password'])),
         email = data['email']
->>>>>>> master
     )
 
     Cart.objects.create(
@@ -196,12 +192,9 @@ def updateBook(request, pk):
 
     if data.get('discount_rate') is not None:
         book.discount_rate = data['discount_rate']
-<<<<<<< HEAD
-=======
         message = "There is a discount on the book \"" + book.title  + "\" go ahead and buy it now!"""
         #wishlists = Wishlist.objects.get()
         #server.sendmail(sender_email, user.mail, message)
->>>>>>> master
     
     book.price = book.original_price * Decimal.from_float(book.discount_rate)
     #print(book.price * book.discount_rate)
@@ -389,11 +382,7 @@ def checkout(request, pk):
 def refund(request, pk):
     order = Order.objects.get(order_id=pk)
 
-<<<<<<< HEAD
     if order.status == "Refund Requested" or order.status == 'Processing' or order.status == 'In-transit': 
-=======
-    if order.status == "Refund Requested": 
->>>>>>> master
         order_items = order.order_items.all()
 
         for item in order_items.iterator():
@@ -616,11 +605,7 @@ def updateOrderStatus(request, pk):
     data = request.data
     if data.get('status') is not None:
         order.status = data['status']
-<<<<<<< HEAD
-    print(order.status)
-=======
     
->>>>>>> master
     order.save()
     serializer = AuthorSerializer(order, many=False)
     return Response(serializer.data)
@@ -645,9 +630,6 @@ def getRevenueByDate(request, pk):
         ]
 
 
-<<<<<<< HEAD
-    return Response(response)
-=======
     return Response(response)
 
 @api_view(['GET'])
@@ -660,4 +642,3 @@ def getAllGenres(request):
             genres.append(temp_genre)
 
     return Response(genres)
->>>>>>> master

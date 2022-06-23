@@ -20,11 +20,7 @@ const handleDB = (comment, rating, user_id) => {
       user_id: user_id,
       comment: comment,
       rating: rating,
-<<<<<<< HEAD
       //is_visible: true
-=======
-      // is_visible: true
->>>>>>> master
     })
     .then(function (response) {
         console.log(response.data)

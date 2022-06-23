@@ -12,7 +12,7 @@ const ManageRefundsPage = () => {
     return(
         <>
             <HeaderBar/>
-            <ManageProducts/>
+            
         </>
 
     )

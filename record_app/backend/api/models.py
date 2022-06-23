@@ -67,11 +67,7 @@ class Book(models.Model):
     image_link = models.TextField(default='')
     original_price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
-<<<<<<< HEAD
-    discount_rate = models.DecimalField(max_digits=3, decimal_places=2, default=0)
-=======
     discount_rate = models.DecimalField(max_digits=3, decimal_places=2, default=1)
->>>>>>> master
     in_stock = models.BooleanField(default=True)
     description = models.TextField(default='')
     arrival_price = models.DecimalField(max_digits=10, decimal_places=2, default=0)

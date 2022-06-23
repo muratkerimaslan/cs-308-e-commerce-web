@@ -2,21 +2,14 @@ import { useEffect, useState } from "react";
 import HeaderBar from "../components/HeaderBar";
 import axios from "axios";
 import { useGlobalState } from "../auth/global_state";
-<<<<<<< HEAD
 import "../components/ListView/ListView.css"
-=======
->>>>>>> master
 
 
 
 const OrderHistoryPage = () => {
 
-<<<<<<< HEAD
     const [orderHistory, setOrderHistory] = useState([]);
     const [orderClickCount, setOrderClickCount] = useState(0);
-=======
-    const [orderHistory,setOrderHistory] = useState(''); 
->>>>>>> master
     const [{user_id}] = useGlobalState('user')
     
     //    path('getOrders/<str:pk>/', views.getOrders),
@@ -24,35 +17,22 @@ const OrderHistoryPage = () => {
     const handleDBLoadUserOrderHistory = () => { // not using useEffect as it will only be called inside IF block
         axios.get('http://localhost:8000/getOrders/' + user_id )
         .then(function (response) {
-<<<<<<< HEAD
             console.log("handDBloaduseOrderHistory called");
             console.log("response.data=", response.data);
             setOrderHistory(response.data);
             console.log('history=' , orderHistory);
             
-=======
-            console.log("handDBloaduseOrderHistory");
-            console.log(response.data);
-            setOrderHistory('ffff');
-            console.log('history = ');
-            console.log(orderHistory);
->>>>>>> master
         })
         .catch(function (error) {
           console.log(error);
         });
-<<<<<<< HEAD
     }
-=======
-}
->>>>>>> master
     useEffect( () => {
         if (user_id !== '')
         {
             handleDBLoadUserOrderHistory();
         }
 
-<<<<<<< HEAD
     },[orderClickCount])
 
     const orderButtonClick = (order, sta) => {
@@ -155,9 +135,6 @@ const OrderHistoryPage = () => {
         )
     })
 
-=======
-    }, [] )
->>>>>>> master
 
 
     
@@ -205,12 +182,9 @@ const OrderHistoryPage = () => {
     return(
         <>
             <HeaderBar/>
-<<<<<<< HEAD
             <ul className="order-container">
                 {useOrderHistory}
             </ul>
-=======
->>>>>>> master
             
         </>
 
