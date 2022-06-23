@@ -1,24 +1,68 @@
 
 
 // import { Link } from "react-router-dom";
-import { setGlobalUserRecentlyLoggedIn,setGlobalCartRemoveBook,useGlobalState, } from "../../auth/global_state";
+import { setGlobalUserRecentlyLoggedIn,setGlobalCartRemoveBook,setGlobalCartNewQty ,useGlobalState, } from "../../auth/global_state";
 import axios from "axios";
 import AddToCartButton from "../AddToCartButton";
+import './CartList.css';
+import { useState } from "react";
 const CartList = () => {
     const [cart] = useGlobalState('cart');
     const [user] = useGlobalState('user');
-    console.log("user == " );
-    console.log(user);
+    // const [t]
+    // const [loadedBooksDict, setLoadedBooksDict ] = useState([]);
+    // console.log("user == " );
+    // console.log(user);
     console.log("cart = ");
     console.log(cart);
     // if (user.username === ""){ // not signedin;
     //     console.log("cart without checking backend = ");
     //     console.log(cart);
     // }
-    if (cart.numItems === 0 ){
-        console.log("CART is empty");
+    // if (cart.numItems === 0 ){
+    //     console.log("CART is empty");
         
+    // }
+    
+
+    const handleDBLoadUserCart = () => { // not using useEffect as it will only be called inside IF block
+            axios.get('http://localhost:8000/getCartItems/' + user.user_id )
+            .then(function (response) {
+                console.log("handDBloaduserCart");
+                console.log(response.data); 
+                for (const cartItem of response.data) { // response.data = cartItems {book:2 , amount: 1}  => book_id; other fields in cartItem is useless
+                    const new_qty = cartItem.amount;
+                    console.log("book id ");
+                    console.log(cartItem.book);
+                    handleDBLoadBook(cartItem.book,new_qty) // carItem.book = bookID; not the book object for some reason 
+                    // setGlobalCartNewQty(new_book,parseInt(new_qty)); this is called inside handleDBloadbook instead
+                }
+            })
+            .catch(function (error) {
+              console.log(error);
+            });
     }
+    const handleDBLoadBook = (bookId,new_qty) => { // helper for loadusercart and set frontend Global inside this because of async nature of axiso get
+            axios.get('http://localhost:8000/books/' + bookId)
+            .then(function (response) {
+            // setLoadedBooksDict((prev) => ({...prev, bookId:response.data }));
+            setGlobalCartNewQty(response.data,new_qty);
+            })
+            .catch(function (error) {
+            console.log(error);
+            });
+    }
+    const handleDBDeleteFromCart = (bookId) => { 
+        axios.delete('http://localhost:8000/deleteCartItem/' + bookId + '/' + user.user_id )
+        .then(function (response) {
+          console.log(response);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    }
+
+
     if (user.username !== "" && user.recently_logged_in === true) // logging in and checking cart for the first time
     {
         setGlobalUserRecentlyLoggedIn(false); // set recent_logged_in field to false;
@@ -32,6 +76,9 @@ const CartList = () => {
             setGlobalCartRemoveBook(cur_key); // chec
           }
         // use effect downlaod new
+        
+        handleDBLoadUserCart();
+        
     }
     // useEffect(() => {
         //     const handleDB = () => {
@@ -46,20 +93,12 @@ const CartList = () => {
         //     handleDB();
         // }, []);
     
-    console.log("user == " );
-    console.log(user);
+    // console.log("user == " );
+    // console.log(user);
     // path('getCartItems/<str:pk>/', views.getCartItems),
     // path('addCartItem/<str:pk>', views.addCartItem),
     // path('deleteCartItem/<str:b_pk>/<str:u_pk>', views.deleteCartItem),
-    const handleDBDeleteFromCart = (bookId) => {
-        axios.delete('http://localhost:8000/deleteCartItem/' + bookId + '/' + user.user_id )
-        .then(function (response) {
-          console.log(response);
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
-    }
+   
 
     const RemoveFromCart = (e,book_id) => { // add to cart is in addtocartbutton component
         e.preventDefault();
@@ -67,44 +106,59 @@ const CartList = () => {
         handleDBDeleteFromCart(book_id);
 
     }
+
+  
    
     const CartListItems2 = Array.from(cart.Items.entries()).map((entry) => {
         const [key , val] = entry; // key = bookId, val = {book object , qty : 2}
         return(
-            <li>
-                <div>   
-                <p> id : {key}</p> 
-                <p> title : {val.book.title}</p> 
-                {
-                    
-                    (val.qty) > 1 ? <p> price : {val.book.price} * {val.qty} =  {parseInt(val.book.price) * parseInt(val.qty)}</p>
-                    : <p> price : {val.book.price} </p>
-                }
+            <li key = {val.book.book_id}>
+                <div className="my-cart-item">        
                 
-                <p> num : {val.qty}</p>
+                    <img
+                        alt = "URL not found"
+                        src = {val.book.image_link}   
+                        width="200"
+                        height="320"                
+                    />
+                    <h3 className="title">{val.book.title}</h3>            
+
+                <div className="descriptions">
+                    {
+                    
+                        (val.qty) > 1 ? <h3> total price : {val.book.price} * {val.qty} =  {parseInt(val.book.price) * parseInt(val.qty)}</h3>
+                        : <h3> total price : {val.book.price} </h3>
+                    }
+                    <h4>rating = {val.book.rating}</h4>
+                    <h4>{val.book.genre}</h4>
+                    <br/>
+                    <AddToCartButton book={val.book} msg={"update quantity"} init_qty={val.qty} />
+                    {/* &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; */}
+                    <button style={{float:'right'}} type="submit" onClick={ (e) => RemoveFromCart(e,key) } >
+                        remove from cart
+                    </button>
                 </div>
-                <AddToCartButton book={val.book} msg={"update quantity"} init_qty={val.qty} />
-                <button type="submit" onClick={ (e) => RemoveFromCart(e,key) } >
-                    remove
-                </button>
-            </li>)
+                </div>
+            </li>
+        )
 }
     )
     return(
         <>
-            <h1>
-                This is cart List:
-            </h1>
+            
+                
+            
             <br/>
-            <h2>
-                total_num = 
-                {cart.numItems}
-                <br/>
-                <ul>
-                    {CartListItems2}
-                </ul>
-              
-            </h2>
+            <h2 style={{paddingLeft:'10px'}}> {(cart.numItems === 0) ? 'Your cart is empty' : 'Items in your cart'}</h2>
+           
+            <br/>
+            <ul>
+                {
+                }
+                {CartListItems2}
+            </ul>
+            
+           
          
         </>
     )
@@ -178,3 +232,23 @@ export default CartList;
            
 //         </li>
 //     )
+
+
+// carft items list return
+//return(
+        //     <li>
+        //         <div>   
+        //         <p> title : {val.book.title}</p> 
+        //         {
+                    
+        //             (val.qty) > 1 ? <p> price : {val.book.price} * {val.qty} =  {parseInt(val.book.price) * parseInt(val.qty)}</p>
+        //             : <p> price : {val.book.price} </p>
+        //         }
+                
+        //         <p> num : {val.qty}</p>
+        //         </div>
+        //         <AddToCartButton book={val.book} msg={"update quantity"} init_qty={val.qty} />
+        //         <button type="submit" onClick={ (e) => RemoveFromCart(e,key) } >
+        //             remove
+        //         </button>
+        //     </li>)

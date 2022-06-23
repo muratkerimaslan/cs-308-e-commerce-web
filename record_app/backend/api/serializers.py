@@ -1,5 +1,5 @@
 from rest_framework.serializers import ModelSerializer
-from .models import Author, User, Book, Comment, Cart, Cart_Item
+from .models import Author, User, Book, Comment, Cart, Cart_Item, Order, Order_Item, Wishlist, Wishlist_Item
 
 class UserSerializer(ModelSerializer):
     class Meta:
@@ -31,3 +31,22 @@ class Cart_ItemSerializer(ModelSerializer):
         model = Cart_Item
         fields = '__all__'
 
+class OrderSerializer(ModelSerializer):
+    class Meta:
+        model = Order
+        fields = '__all__'
+
+class Order_ItemSerializer(ModelSerializer):
+    class Meta:
+        model = Order_Item
+        fields = '__all__'
+
+class WishlistSerializer(ModelSerializer):
+    class Meta:
+        model = Wishlist
+        fields = '__all__'
+
+class Wishlist_ItemSerializer(ModelSerializer):
+    class Meta:
+        model = Wishlist_Item
+        fields = '__all__'

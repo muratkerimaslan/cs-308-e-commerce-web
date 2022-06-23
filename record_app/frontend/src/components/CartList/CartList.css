@@ -1,0 +1,24 @@
+.my-cart-item {
+
+    height:350px;
+    width: 1200px;
+    border: 4px solid rgb(39, 184, 99);
+    padding: 10px;
+    margin: 10px;
+    overflow: hidden;
+    
+}
+
+.my-cart-item img {
+
+    margin-right: 15px;
+    float: left;
+}
+
+.my-cart-item .descriptions {
+
+    margin-left: 15px;
+    display: block;
+    margin: 2px 0 0 0;
+}
+

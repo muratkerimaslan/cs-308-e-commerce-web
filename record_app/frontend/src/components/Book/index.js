@@ -20,7 +20,7 @@ const Book = () => {
     // const [qty,setQty] = useState(1); // default quantity to add to cart
 
     useEffect(() => {
-        const handleDB = () => {
+        const handleDB = () => { // getbooks
             axios.get('http://localhost:8000/books/' + bookId)
             .then(function (response) {
               setBook(response.data);
@@ -66,7 +66,8 @@ const Book = () => {
             </h1>
             
             <div >        
-                <img height={100}
+                <img height={250}
+                    width={200}
                 alt = "URL not found"
                 src = {book.image_link}                    
                 />
@@ -77,7 +78,7 @@ const Book = () => {
                     <p> Price : {book.price} $</p>
                     <p> Description: {book.description}</p>
                     <p> Year : {book.publisher_year}</p>
-                    <p> Rating : {book.rating}</p>
+                    {/* <p> Rating : {book.rating}</p> */}
                     <p> Remaining stock : {book.stock_amount}</p>
 
             </div>

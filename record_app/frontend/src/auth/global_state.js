@@ -8,7 +8,7 @@ const { setGlobalState, useGlobalState } = createGlobalState({
     recently_logged_in: true // if they have just logged in, to load cart from backend
   },
   cart :{
-    numItems: 0, // total amount
+    numCartItems: 0, // total amount
     Items_Id: {
       //book_id : amount (qty)
       // a dictionary of book Id's as keys 
@@ -36,7 +36,28 @@ const { setGlobalState, useGlobalState } = createGlobalState({
   // },
   // cartNumItems2: 0,
   // count: 0,
-}});
+},
+wishlist : {
+  numWishlistItems : 0,
+  Items_Id : { // it could be an array, but I used this format so that it is same as cart;
+    //book_id : 1 if exists;
+    // book_id doesn't exist if it isn't in wishlist
+  },
+  Items : new Map() //{ // to show fields in frotnedn 
+     // key : id , value : book object
+      // author_id: 3
+      // book_id: 1
+      // description: "leonardo dicaprio plays in the film adaptation"
+      // genre: "Fiction"
+      // in_stock: true
+      // price: "20.00"
+      // publisher: "Scribner Book Company"
+      // publisher_year: 2004
+      // rating: "4.0"
+      // stock_amount: 5
+      // title: "The Great Gatsby"
+}
+});
 
 
  // v = previous state;
@@ -73,7 +94,7 @@ export const setGlobalCartNewQty = (book, new_qty) => {
     {
       prev_qty = parseInt(v.Items_Id[book.book_id]);
     }
-    v.numItems = v.numItems + new_qty - prev_qty;
+    v.numCartItems = v.numCartItems + new_qty - prev_qty;
     v.Items_Id = Object.assign({}, v.Items_Id, { [book.book_id] : new_qty});
     v.Items.set(book.book_id, {book, qty:new_qty });
     return (Object.assign({},v)); // need object.assign beause global hook library doesn't understand the valeu is changed on "return v";
@@ -87,7 +108,7 @@ export const setGlobalCartRemoveBook = (book_id) => {
     if (v.Items_Id.hasOwnProperty(book_id))
     {
       let item_qty = v.Items_Id[book_id];
-      v.numItems -= item_qty;
+      v.numCartItems -= item_qty;
       delete v.Items_Id[book_id];
       // console.log("type of bookid = ");
       // console.log(typeof book_id);
@@ -100,6 +121,62 @@ export const setGlobalCartRemoveBook = (book_id) => {
   );
 
 }
+
+// export const setGlobalWishlistAdd = () => {
+//   setGlobalState('wishlist', (v) => {
+    
+//       v.numWishlistItems = v.numWishlistItems + 1;
+    
+//     return (Object.assign({},v));
+//   }
+//   )
+  
+// };
+// export const setGlobalWishlistRemove = () => {
+//   setGlobalState('wishlist', (v) => {
+//     v.numWishlistItems = v.numWishlistItems -1 ;
+//     return ( Object.assign({},v));
+//   });
+// };
+
+export const setGlobalWishlistRemoveBook = (book_id) => {
+
+  setGlobalState('wishlist', (v) => {
+    
+    if (v.Items_Id.hasOwnProperty(book_id))
+    {
+      
+      v.numWishlistItems -= 1;
+      delete v.Items_Id[book_id];
+      // console.log("type of bookid = ");
+      // console.log(typeof book_id);
+      v.Items.delete(parseInt(book_id)); // need to parseInt so that book_id is int
+      console.log('new wishlist after delete');
+      console.log(v);
+    }
+    
+    return (Object.assign({},v));
+  }
+  
+  );
+
+}
+
+export const setGlobalWishlistAddBook = (book) => {
+ 
+  setGlobalState('wishlist' ,  (v) => {
+    if (v.Items_Id.hasOwnProperty(book.book_id))
+    {
+      return (Object.assign({},v));
+    }
+    v.numWishlistItems += 1;
+    v.Items_Id = Object.assign({}, v.Items_Id, { [book.book_id] : 1});
+    v.Items.set(book.book_id, {book});
+    console.log('new wishlist after add');
+    console.log(v);
+    return (Object.assign({},v)); // need object.assign beause global hook library doesn't understand the valeu is changed on "return v";
+    });
+} 
 
 // export const setCartNew = (_id, new_qty) => {
 //   setGlobalState('cart' ,  (v) => {

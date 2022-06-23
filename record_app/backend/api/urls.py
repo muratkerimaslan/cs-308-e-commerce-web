@@ -35,6 +35,14 @@ urlpatterns = [
     path('deleteCartItem/<str:b_pk>/<str:u_pk>', views.deleteCartItem),
     path('updateCartItem/<str:b_pk>/<str:u_pk>', views.updateCartItem),
     path('checkout/<str:pk>', views.checkout),
+    path('refund/<str:pk>', views.refund),
+
+
+    path('getWishlistItems/<str:pk>/', views.getWishlistItems),
+    path('getWishlistItem/<str:b_pk>/<str:u_pk>', views.getWishlistItem),
+    path('addWishlistItem/<str:pk>', views.addWishlistItem),
+    path('deleteWishlistItem/<str:b_pk>/<str:u_pk>', views.deleteWishlistItem),
+    #path('updateWishlistItem/<str:b_pk>/<str:u_pk>', views.updateWishlistItem),
 
     #getInvisibleComments
     path('comments/', views.getInvisibleComments),
@@ -49,8 +57,11 @@ urlpatterns = [
     path('comments/create', views.createComment),
 
     #getBooksByGenre
-    path('getBooksByGenre/<str:pk>/', views.getBooksByGenre)
+    path('getBooksByGenre/<str:pk>/', views.getBooksByGenre),
 
+    path('getOrders/<str:pk>/', views.getOrders),
+    path('getOrder30/<str:pk>/', views.getOrder30),
 
-    
+    path('updateOrderStatus/<str:pk>', views.updateOrderStatus),
+    path('getRevenueByDate/<str:pk>', views.getRevenueByDate)
 ]

@@ -21,7 +21,7 @@ const handleDB = (comment, rating, user_id) => {
       user_id: user_id,
       comment: comment,
       rating: rating,
-      is_visible: true
+      //is_visible: true
     })
     .then(function (response) {
         console.log(response.data)
