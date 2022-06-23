@@ -607,7 +607,7 @@ def updateOrderStatus(request, pk):
         order.status = data['status']
     
     order.save()
-    serializer = AuthorSerializer(order, many=False)
+    serializer = OrderSerializer(order, many=False)
     return Response(serializer.data)
 
 # -----------------------

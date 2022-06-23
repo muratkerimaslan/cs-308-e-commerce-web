@@ -13,8 +13,8 @@ const CartList = () => {
     // const [loadedBooksDict, setLoadedBooksDict ] = useState([]);
     // console.log("user == " );
     // console.log(user);
-    console.log("cart = ");
-    console.log(cart);
+    // console.log("cart = ");
+    // console.log(cart);
     // if (user.username === ""){ // not signedin;
     //     console.log("cart without checking backend = ");
     //     console.log(cart);
