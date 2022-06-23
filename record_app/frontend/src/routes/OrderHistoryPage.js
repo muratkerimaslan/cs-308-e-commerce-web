@@ -7,7 +7,7 @@ import { useGlobalState } from "../auth/global_state";
 
 const OrderHistoryPage = () => {
 
-    const [orderHistory,setOrderHistory] = useState([]); 
+    const [orderHistory,setOrderHistory] = useState(''); 
     const [{user_id}] = useGlobalState('user')
     
     //    path('getOrders/<str:pk>/', views.getOrders),
@@ -17,7 +17,9 @@ const OrderHistoryPage = () => {
         .then(function (response) {
             console.log("handDBloaduseOrderHistory");
             console.log(response.data);
-
+            setOrderHistory('ffff');
+            console.log('history = ');
+            console.log(orderHistory);
         })
         .catch(function (error) {
           console.log(error);
@@ -34,7 +36,7 @@ const OrderHistoryPage = () => {
 
     
 
-//     const wishlistItems = Array.from(wishlist.Items.entries()).map((entry) => {
+//     const userHistoryItems = Array.from(wishlist.Items.entries()).map((entry) => {
 //         const [key , val] = entry; // key = bookId, val = {book object , qty : 2}
 //         console.log('')
 //         return(

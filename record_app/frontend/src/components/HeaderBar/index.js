@@ -17,8 +17,8 @@ const HeaderBar = ({home_search_term , setHomeSearchTerm} ) => { // home search 
     const [barSearchTerm, setBarSearchTerm] = useState('');
 
     let current_adress = useLocation(); // to check if we are in cart page or not, to display checkout page
-    console.log("location = ");
-    console.log(current_adress);
+    // console.log("location = ");
+    // console.log(current_adress);
     // console.log(username);
     // console.log("Cart items = ");
     // console.log(cartNumItems2);
@@ -161,9 +161,9 @@ const HeaderBar = ({home_search_term , setHomeSearchTerm} ) => { // home search 
                 (user_id !== '' && user_id > 2 && user_id < 4) ?  // sales manager  ## id = [3,4]
                 <>
                     <li style={{color:'blue' , fontWeight:'600'}}> (Sales Manager {username} =&gt;) </li>
-                    <li> <Link to='/ManageCommentsPage' style={{color:'red'}}> Manage Prices </Link></li>
-                    <li> <Link to='/ManageProductsPage' style={{color:'red'}}> Manage Refunds </Link></li>
-                    <li> <Link to='/ManageProductsPage' style={{color:'red'}}> Sale Statistics </Link></li>
+                    <li> <Link to='/ManagePricesPage' style={{color:'red'}}> Manage Prices </Link></li>
+                    <li> <Link to='/ManageRefundsPage' style={{color:'red'}}> Manage Refunds </Link></li>
+                    <li> <Link to='/SaleStatsPage' style={{color:'red'}}> Sale Statistics </Link></li>
                 </>              
                 :
                 <></>
