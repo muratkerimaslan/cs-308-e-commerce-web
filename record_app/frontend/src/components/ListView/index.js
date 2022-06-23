@@ -122,15 +122,22 @@ const ListView = ({Lgenre_target, Lsearch_term ='',sortCriteria = '' , setHomeBo
                         height="200"                
                     />
                     <h3 className="title">{book.title}</h3>            
-
+                
                 </Link> 
+                    {
+                        (parseFloat(book.discount_rate) > 0) ? <h3 style={{textDecoration:'line-through', textDecorationThickness:'2px', textDecorationColor:'red'}}> {book.original_price} $</h3> 
+                        
+                        :
+                        <>
+                        </>
+                    }
                     <h3>{book.price} $</h3>
                     <h3>rating = {book.rating}</h3>
                     <h4>{book.genre}</h4>
                     <p>{book.publisher}</p>
                    
                     <AddToCartButton book = {book} init_qty={1}  />
-                    <AddToWishlistButton key={book_exists} book = {book} init_is_in_wishlist={book_exists} />
+                    <AddToWishlistButton  book = {book} init_is_in_wishlist={book_exists} />
                 </div>
             </li>
         )

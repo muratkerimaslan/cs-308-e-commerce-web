@@ -24,11 +24,19 @@ const WishlistPage = () => {
                     <h3 className="title">{val.book.title}</h3>            
 
                 <div className="descriptions">
-                    {
+                    <h3 style={{display:'inline-block'}}> price :</h3>
+
+                    {   
+
                     
-                        (val.book.discount_rate) > 0 ? <h3> old price : {val.book.original_price} --&gt;  {val.book.price}</h3>
-                        : <h3> price : {val.book.price} </h3>
+                        (parseFloat(val.book.discount_rate)) > 0 ? <h3 style={{ display:'inline-block', textDecoration:'line-through', 
+                                textDecorationThickness:'2px', textDecorationColor:'red'}} > {val.book.original_price} $</h3>
+                        :
+                        <>
+                        </>
+                      
                     }
+                    <h3 style={{display:'inline-block',paddingLeft:'8px'}}> {val.book.price} $ </h3>
                     <h4>rating = {val.book.rating}</h4>
                     <h4>{val.book.genre}</h4>
                     <br/>

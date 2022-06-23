@@ -1,6 +1,6 @@
 // import { useNavigate } from "react-router-dom";
 import { useGlobalState } from "../auth/global_state";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 // import { useEffect } from "react";
 import HeaderBar from "../components/HeaderBar";
 import CreditCard from "../components/CreditCard";
@@ -32,7 +32,7 @@ const CheckoutPage = () => {
                 You are at checkout page {user.username !== '' ? user.username : 'you need to login'};
             </h1>
             <h2> 
-                Enter your credit card info below 
+                Enter your credit card info below to buy the products you added to your cart 
             </h2>
             <CreditCard/>
             

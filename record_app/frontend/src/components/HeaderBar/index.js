@@ -23,7 +23,7 @@ const HeaderBar = ({home_search_term , setHomeSearchTerm} ) => { // home search 
     // console.log("Cart items = ");
     // console.log(cartNumItems2);
 
-    const handleDBLoadWishlistBook = (bookId) => { // helper for loadusercart and set frontend Global inside this because of async nature of axiso get
+    const handleDBLoadWishlistBook = (bookId) => { // helper for loadwishlist and set frontend Global inside this because of async nature of axiso get
         axios.get('http://localhost:8000/books/' + bookId)
         .then(function (response) {
         // setLoadedBooksDict((prev) => ({...prev, bookId:response.data }));
@@ -115,11 +115,11 @@ const HeaderBar = ({home_search_term , setHomeSearchTerm} ) => { // home search 
                 </>
             }
             {
-                (current_adress.pathname === '/Cart') ?    // if is in CartPage
+                (current_adress.pathname === '/Cart' && numCartItems > 0) ?    // if is in CartPage
                 <li>  
                   <Link to = {(username === '') ? '/Login' : '/Checkout' }> Checkout</Link><br/>
                   <p style={{color:'rgb(17, 71, 121)', fontWeight:'600'}}> subtotal ({numCartItems} items) </p>
-                </li>  : 
+                </li>  :
                 // else
                 <>                 
                 <li>
@@ -135,7 +135,7 @@ const HeaderBar = ({home_search_term , setHomeSearchTerm} ) => { // home search 
                         <p style={{color:'rgb(17, 71, 121)', fontWeight:'600'}}> ({numWishlistItems} items) </p>
                     </li>
                     <li>
-                        <Link to = '/Wishlist'> Order History</Link><br/>
+                        <Link to = '/OrderHistoryPage'> Order History</Link><br/>
                         <p style={{color:'rgb(17, 71, 121)', fontWeight:'600'}}> ({numWishlistItems} orders) </p>
                     </li>  
                 </>
@@ -145,7 +145,7 @@ const HeaderBar = ({home_search_term , setHomeSearchTerm} ) => { // home search 
             {
                 (user_id !== '' && user_id <= 2) ?  // product manager 
                 <>
-                    <li style={{color:'red' , fontWeight:'600'}}> (Product Manager {username} =>) </li>
+                    <li style={{color:'red' , fontWeight:'600'}}> (Product Manager {username} =&gt;) </li>
                     <li> <Link to='/ManageCommentsPage' style={{color:'red'}}> Manage Comments </Link></li>
                     <li> <Link to='/ManageProductsPage' style={{color:'red'}}> Manage Products </Link></li>
                 </>              
