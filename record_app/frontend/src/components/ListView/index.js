@@ -2,13 +2,19 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import "./ListView.css";
 import AddToCartButton from "../AddToCartButton";
+import AddToWishlistButton from "../AddToWishlistButton";
 import { Link } from "react-router-dom";
+import { useGlobalState } from "../../auth/global_state";
 const ListView = ({Lgenre_target, Lsearch_term ='',sortCriteria = '' , setHomeBookCount }) => {
     //console.log("listgenre ) ");
     //console.log(Lgenre_target);
     //console.log("Lsearch_term");
     //console.log(Lsearch_term);
     const [books, setBooks] = useState([]);
+    const [wishlist] = useGlobalState('wishlist');
+    useEffect( () => {
+        console.log('useEffectcalled 1 ');
+    } , [wishlist])
     let db_adress = 'http://localhost:8000/books'
 
     if (Lgenre_target !== 'All') { //  getBooksByGenre/Fiction
@@ -32,6 +38,8 @@ const ListView = ({Lgenre_target, Lsearch_term ='',sortCriteria = '' , setHomeBo
         }
         handleDB();
     }, [db_adress,Lgenre_target,Lsearch_term]);
+    
+
 
     useEffect(() => {
         console.log('Sort criteria = ' + sortCriteria);
@@ -96,6 +104,11 @@ const ListView = ({Lgenre_target, Lsearch_term ='',sortCriteria = '' , setHomeBo
         if (book.genre !== Lgenre_target && Lgenre_target !== 'All') {
             return ( <></>)
         }
+        let book_exists = false;
+        if (wishlist.Items_Id.hasOwnProperty(book.book_id))
+        {
+            book_exists = true;
+        }
         //console.log(book);
         const book_adress = '/Book/'+ book.book_id;
         return(
@@ -116,7 +129,8 @@ const ListView = ({Lgenre_target, Lsearch_term ='',sortCriteria = '' , setHomeBo
                     <h4>{book.genre}</h4>
                     <p>{book.publisher}</p>
                    
-                    <AddToCartButton book = {book}  />
+                    <AddToCartButton book = {book} init_qty={1}  />
+                    <AddToWishlistButton key={book_exists} book = {book} init_is_in_wishlist={book_exists} />
                 </div>
             </li>
         )

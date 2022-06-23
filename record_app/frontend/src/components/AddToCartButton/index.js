@@ -9,6 +9,13 @@ const AddToCartButton =  ({book, msg = "add to cart", init_qty = 1}) => {
     const [cart] = useGlobalState('cart');
     const [qty,setQty] = useState(init_qty);
 
+    useEffect( () => {
+        setQty(init_qty);
+        console.log("asdasd");
+    }, [init_qty] )
+
+    // console.log("qty = " + qty ); 
+    // console.log("init_qty = " + init_qty ); 
     
     // path('addCartItem/<str:pk>', views.addCartItem),
     // pk = user.id
@@ -80,11 +87,11 @@ const AddToCartButton =  ({book, msg = "add to cart", init_qty = 1}) => {
     //     }
         
     // }
-    useEffect( () =>
-    {
-        console.log("useEffect called");
-        setQty(cart.Items_Id[book.book_id]);
-    },[]);
+    // useEffect( () =>
+    // {
+    //     console.log("useEffect called");
+    //     setQty(cart.Items_Id[book.book_id]);
+    // },[]);
 
     return(
     <> 

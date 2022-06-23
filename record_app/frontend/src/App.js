@@ -9,6 +9,7 @@ import BookPage from './routes/BookPage';
 import CheckoutPage from './routes/CheckoutPage';
 import ManageCommentsPage from './routes/ManageCommentsPage';
 import ManageProductsPage from './routes/ManageProductsPage';
+import WishlistPage from './routes/WishlistPage';
 
 
 function App() {
@@ -20,6 +21,7 @@ function App() {
         <Route path ='/SignUp' element = {<SignUp/>}/>
         <Route path ='/Cart' element = {<CartPage/>}/>
         <Route path ='/ManageCommentsPage' element = {<ManageCommentsPage/>}/>
+        <Route path ='/Wishlist' element = {<WishlistPage/>}/>
         <Route path ='/ManageProductsPage' element = {<ManageProductsPage/>}/>
         <Route path="Book">
           <Route path=":bookId" element={<BookPage />} />

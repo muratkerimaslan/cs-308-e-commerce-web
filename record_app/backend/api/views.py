@@ -6,7 +6,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from sympy import true
 
-from backend import api
+#from backend import api
 from .serializers import CommentSerializer, UserSerializer, BookSerializer, AuthorSerializer, CartSerializer, Cart_ItemSerializer, WishlistSerializer, Wishlist_ItemSerializer, OrderSerializer, Order_ItemSerializer
 from .models import User, Book, Comment, Author, Cart, Cart_Item, Order, Order_Item, Wishlist, Wishlist_Item
 #from record_app.backend.api import serializers
@@ -68,7 +68,9 @@ def createUser(request):
     user = User.objects.create(
         name = data['name'],
         password = data['password'],
-        cart = Cart.objects.create()
+        cart = Cart.objects.create(),
+        wishlist = Wishlist.objects.create()
+
     )
     serializer = UserSerializer(user, many=False)
     return Response(serializer.data)

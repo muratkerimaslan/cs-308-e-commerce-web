@@ -2,12 +2,18 @@
 import { Link, useLocation, } from "react-router-dom";
 import './HeaderBar.css'
 import { useState } from "react";
-import { useGlobalState } from "../../auth/global_state";
+import axios from "axios";
+import { setGlobalWishlistAddBook, useGlobalState } from "../../auth/global_state";
+import { useEffect } from "react";
+
 
 const HeaderBar = ({home_search_term , setHomeSearchTerm} ) => { // home search term isn't used right now, as we only set its value, to pass to listview, we don't use its value inside headerbar
     const [{username}] = useGlobalState('user');
     const [{user_id}] = useGlobalState('user');
-    const [{numItems}] = useGlobalState('cart'); // from cart
+    const [{numCartItems}] = useGlobalState('cart'); // from cart
+    const [{numWishlistItems}] = useGlobalState('wishlist'); // from cart
+    // const [{numCartItems}] = useGlobalState('cart'); // from order history
+    // console.log('Numwish = ' + numWishlistItems);
     const [barSearchTerm, setBarSearchTerm] = useState('');
 
     let current_adress = useLocation(); // to check if we are in cart page or not, to display checkout page
@@ -16,6 +22,43 @@ const HeaderBar = ({home_search_term , setHomeSearchTerm} ) => { // home search 
     // console.log(username);
     // console.log("Cart items = ");
     // console.log(cartNumItems2);
+
+    const handleDBLoadWishlistBook = (bookId) => { // helper for loadusercart and set frontend Global inside this because of async nature of axiso get
+        axios.get('http://localhost:8000/books/' + bookId)
+        .then(function (response) {
+        // setLoadedBooksDict((prev) => ({...prev, bookId:response.data }));
+        setGlobalWishlistAddBook(response.data);
+        })
+        .catch(function (error) {
+        console.log(error);
+        });
+}
+
+    const handleDBLoadUserWishlist = () => { // not using useEffect as it will only be called inside IF block
+        axios.get('http://localhost:8000/getWishlistItems/' + user_id )
+        .then(function (response) {
+            console.log("handDBloaduserWishlist");
+            console.log(response.data); 
+            for (const wishlistItem of response.data) { // response.data = cartItems {book:2 , amount: 1}  => book_id; other fields in cartItem is useless
+                handleDBLoadWishlistBook(wishlistItem.book) // carItem.book = bookID; not the book object for some reason 
+            }
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+}
+    useEffect( () => {
+        if (user_id !== '')
+        {
+            handleDBLoadUserWishlist();
+        }
+
+    }, [] )
+
+
+
+
+
     const searchSubmit = (e) => {
         e.preventDefault();
         console.log("submitted");
@@ -75,24 +118,36 @@ const HeaderBar = ({home_search_term , setHomeSearchTerm} ) => { // home search 
                 (current_adress.pathname === '/Cart') ?    // if is in CartPage
                 <li>  
                   <Link to = {(username === '') ? '/Login' : '/Checkout' }> Checkout</Link><br/>
-                  <p style={{color:'rgb(17, 71, 121)', fontWeight:'600'}}> subtotal ({numItems} items) </p>
+                  <p style={{color:'rgb(17, 71, 121)', fontWeight:'600'}}> subtotal ({numCartItems} items) </p>
                 </li>  : 
                 // else
                 <>                 
                 <li>
                     <Link to = '/Cart'> MyCart</Link><br/>
-                    <p style={{color:'rgb(17, 71, 121)', fontWeight:'600'}}> subtotal ({numItems} items) </p>
+                    <p style={{color:'rgb(17, 71, 121)', fontWeight:'600'}}> subtotal ({numCartItems} items) </p>
                 </li>  
                 </>
             }
-            
+            {
+                <>
+                    <li> 
+                        <Link to='/Wishlist'> Wishlist </Link>
+                        <p style={{color:'rgb(17, 71, 121)', fontWeight:'600'}}> ({numWishlistItems} items) </p>
+                    </li>
+                    <li>
+                        <Link to = '/Wishlist'> Order History</Link><br/>
+                        <p style={{color:'rgb(17, 71, 121)', fontWeight:'600'}}> ({numWishlistItems} orders) </p>
+                    </li>  
+                </>
+               
+            }
 
             {
-                (user_id !== '' && user_id <= 2) ? 
+                (user_id !== '' && user_id <= 2) ?  // product manager 
                 <>
-                    <li style={{color:'rgb(17, 71, 121)' , fontWeight:'600'}}> (Product Manager {username}) </li>
-                    <li> <Link to='/ManageCommentsPage'> Manage Comments </Link></li>
-                    <li> <Link to='/ManageProductsPage'> Manage Products </Link></li>
+                    <li style={{color:'red' , fontWeight:'600'}}> (Product Manager {username} =>) </li>
+                    <li> <Link to='/ManageCommentsPage' style={{color:'red'}}> Manage Comments </Link></li>
+                    <li> <Link to='/ManageProductsPage' style={{color:'red'}}> Manage Products </Link></li>
                 </>              
                 :
                 <></>
