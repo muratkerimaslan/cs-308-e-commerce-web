@@ -1,3 +1,4 @@
+from pickle import TRUE
 from turtle import isvisible
 from urllib import response
 from datetime import date, datetime
@@ -5,47 +6,10 @@ from django.shortcuts import render
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from sympy import true
+from decimal import Decimal
 
-from backend import api
 from .serializers import CommentSerializer, UserSerializer, BookSerializer, AuthorSerializer, CartSerializer, Cart_ItemSerializer, WishlistSerializer, Wishlist_ItemSerializer, OrderSerializer, Order_ItemSerializer
 from .models import User, Book, Comment, Author, Cart, Cart_Item, Order, Order_Item, Wishlist, Wishlist_Item
-#from record_app.backend.api import serializers
-
-@api_view(['GET'])
-def getRoutes(request):
-    routes = [
-        {
-            'Endpoint' : '/users/',
-            'method' : 'GET',
-            'body' : 'None',
-            'description' : 'Returns an array of users'
-        },
-        {
-            'Endpoint' : '/users/id',
-            'method' : 'GET',
-            'body' : 'None',
-            'description' : 'Returns a single user'
-        },
-        {
-            'Endpoint' : '/users/create',
-            'method' : 'POST',
-            'body' : {'body' : ""},
-            'description' : 'Creates a new user with data sent from the request'
-        },
-        {
-            'Endpoint' : '/users/id/update',
-            'method' : 'PUT',
-            'body' : {'body' : ""},
-            'description' : 'Creates an existing user with data sent from the request'
-        },
-        {
-            'Endpoint' : '/users/id/delete',
-            'method' : 'DELETE',
-            'body' : "None",
-            'description' : 'Deletes an existing user with the given id'
-        }
-    ]
-    return Response(routes)
 
 # User view functions
 
@@ -65,12 +29,19 @@ def getUser(request, pk):
 def createUser(request):
     data = request.data
     
-    user = User.objects.create(
+    temp_user = User.objects.create(
         name = data['name'],
-        password = data['password'],
-        cart = Cart.objects.create()
+        password = data['password'] 
     )
-    serializer = UserSerializer(user, many=False)
+
+    Cart.objects.create(
+        user = temp_user
+    )
+    Wishlist.objects.create(
+        user = temp_user
+    )
+
+    serializer = UserSerializer(temp_user, many=False)
     return Response(serializer.data)
 
 @api_view(['PUT'])
@@ -221,7 +192,9 @@ def updateBook(request, pk):
     if data.get('discount_rate') is not None:
         book.discount_rate = data['discount_rate']
     
-    book.price = book.original_price * book.discount_rate
+    book.price = book.original_price * Decimal.from_float(book.discount_rate)
+    #print(book.price * book.discount_rate)
+    print(book.price * book.original_price)
     book.save()
     serializer = BookSerializer(book, many=False)
     return Response(serializer.data)
@@ -280,7 +253,7 @@ def addCartItem(request, pk):
             revenue = (temp_book.price - temp_book.arrival_price) * data['amount']
         )
         temp_cart.total_revenue += cart_item.revenue
-        temp_cart.total += float(temp_book.price * temp_book.stock_amount)
+        temp_cart.total += temp_book.price * cart_item.amount
         temp_cart.save()
         serializer = Cart_ItemSerializer(cart_item, many=False)
         return Response(serializer.data)
@@ -300,7 +273,7 @@ def deleteCartItem(request, b_pk, u_pk):
     item = Cart_Item.objects.get(item_id=i_pk)
 
     user.cart.total -= item.price
-    user.cart.revenue -= item.revenue
+    user.cart.total_revenue -= item.revenue
     user.cart.save()
 
     item.delete()
@@ -348,7 +321,8 @@ def updateCartItem(request, b_pk, u_pk):
 # Checkout function
 @api_view(['GET'])
 def checkout(request, pk):
-    cart = User.objects.get(user_id=pk).cart
+    temp_user = User.objects.get(user_id = pk)
+    cart = Cart.objects.get(user=temp_user)
     cart_items = cart.cart_items.all()
     # The `iterator()` method ensures only a few rows are fetched from
     # the database at a time, saving memory.
@@ -358,17 +332,15 @@ def checkout(request, pk):
             enough_in_stock = False
     
     if enough_in_stock:
-        order = Order.objects.create(
-            user_id = pk
+        temp_order = Order.objects.create(
+            user = temp_user
         )
-
-        order_id = order.order_id
 
         for item in cart_items.iterator():
             item.book.stock_amount -= item.amount
 
             order_item = Order_Item.objects.create(
-                order = order_id,
+                order = temp_order,
                 book = item.book,
                 price = item.price,
                 amount = item.amount,
@@ -378,13 +350,13 @@ def checkout(request, pk):
             item.book.save()
             item.delete()
 
-        # deneme
-
-        order_items = order.order_items.all()
-        for o_item in order_items.iterator():
-            order.total_revenue += o_item.revenue
+            temp_order.total_revenue += order_item.revenue
+            temp_order.total += order_item.price
         
-        order.save()
+        temp_order.save()
+        cart.total = 0
+        cart.total_revenue = 0
+        cart.save()
 
         response = [
             {
@@ -405,78 +377,82 @@ def checkout(request, pk):
 @api_view(['GET'])
 def refund(request, pk):
     order = Order.objects.get(order_id=pk)
-    order_items = order.order_items.all()
 
-    for item in order_items.iterator():
-        if (item.book.stock_amount == 0):
-            item.book.in_stock = True
-        item.book.stock_amount += item.amount
-        item.book.save()
+    if order.status == "Refund Requested": 
+        order_items = order.order_items.all()
 
-    order.status = "Refunded"
-    order.save()
+        for item in order_items.iterator():
+            if (item.book.stock_amount == 0):
+                item.book.in_stock = True
+            item.book.stock_amount += item.amount
+            item.book.save()
+
+        order.status = "Refunded"
+        order.save()
+
+        response = [
+            {
+                'body' : 'Refund succesfull !'
+            }
+        ]
+    
+    else:
+        response = [
+            {
+                'body' : 'Order not applicaple for refund, refund unsuccesfull !'
+            }
+        ]
+
+    return Response(response)
 
 # Wishlist view functions
 
 # Primary key of User is needed
 @api_view(['GET'])
 def getWishlistItems(request, pk):
-    wishlist = User.objects.get(user_id=pk).wishlist
+    temp_user = User.objects.get(user_id = pk)
+    wishlist = Wishlist.objects.get(user=temp_user)
     wishlist_items = wishlist.wishlist_items.all()
     serializer = Wishlist_ItemSerializer(wishlist_items, many=True)
     return Response(serializer.data)
 
-# Primary key of Cart_Item is needed
+# Primary key of Book and
+# Primary key of User is needed
 @api_view(['GET'])
 def getWishlistItem(request, b_pk, u_pk):
-    #cart = Cart.objects.get(user_id=pk1)
-    book = Book.objects.get(book_id = b_pk)
-    wishlist_items = book.wishlist_items.all()
-    i_pk = 0
-    for item in wishlist_items.iterator():
-        if item.wishlist.user.user_id == u_pk:
-            i_pk = item.item_id
-    wishlist_item = Wishlist_Item.objects.get(item_id=i_pk)
-    serializer = Wishlist_ItemSerializer(wishlist_item, many=False)
-    return Response(serializer.data)
+    temp_user = User.objects.get(user_id = u_pk)
+    temp_wishlist = Wishlist.objects.get(user = temp_user)
+    temp_book = Book.objects.get(book_id = b_pk)
+    wishlist_item = Wishlist_Item.objects.filter(book = temp_book, wishlist = temp_wishlist)
+    wishlist_serializer = Wishlist_ItemSerializer(wishlist_item, many=True)
+    #book_serializer = BookSerializer(temp_book, many=False)
+    #response = wishlist_serializer.data | book_serializer.data
+    return Response(wishlist_serializer.data)
 
 # Primary key of User is needed
 @api_view(['POST'])
 def addWishlistItem(request, pk):
-    temp_wishlist = User.objects.get(user_id=pk).wishlist
+    temp_user = User.objects.get(user_id = pk)
+    temp_wishlist = Wishlist.objects.get(user=temp_user)
     data = request.data
     temp_book = Book.objects.get(book_id=data['book_id'])
 
-    # Amount check (check amount <= stock_amount)
-    if temp_book.stock_amount == 0:
-        response = [
-            {
-                'body' : 'Book is out of stock'
-            }
-        ]
-        return Response(response)
-    else:
-        wishlist_item = Wishlist_Item.objects.create(
-            wishlist = temp_wishlist,
-            book = temp_book
-        )
-        serializer = Wishlist_ItemSerializer(wishlist_item, many=False)
-        return Response(serializer.data)
+    wishlist_item = Wishlist_Item.objects.create(
+        wishlist = temp_wishlist,
+        book = temp_book
+    )
+    serializer = Wishlist_ItemSerializer(wishlist_item, many=False)
+    return Response(serializer.data)
 
-# Primary key of Wishlist_Item is needed
-# Primary key of Book is needed
+# Primary key of Book and
+# Primary key of User is needed
 @api_view(['DELETE'])
 def deleteWishlistItem(request, b_pk, u_pk):
-    user = User.objects.get(user_id = u_pk)
-    wishlist_items = user.wishlist.wishlist_items.all()
-    book = Book.objects.get(book_id = b_pk)
-    #cart_items = book.cart_items.all()
-    i_pk = 0
-    for item in wishlist_items.iterator():
-        if item.book == book:
-            i_pk = item.item_id
-    item = Wishlist_Item.objects.get(item_id=i_pk)
-    item.delete()
+    temp_user = User.objects.get(user_id = u_pk)
+    temp_wishlist = Wishlist.objects.get(user = temp_user)
+    temp_book = Book.objects.get(book_id = b_pk)
+    wishlist_item = Wishlist_Item.objects.filter(book = temp_book, wishlist = temp_wishlist)
+    wishlist_item.delete()
     return Response('Wishlist Item was deleted!')
 
 # No update function for wishlist item, wasn't meaningful

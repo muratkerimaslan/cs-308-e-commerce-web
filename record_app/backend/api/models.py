@@ -8,29 +8,12 @@ from django.db import models
 
 # Create your models here.
 
-class Cart(models.Model):
-    cart_id = models.AutoField(primary_key=True, auto_created=True)
-    total = models.FloatField(default=0)
-    total_revenue = models.FloatField(default=0)
-
-    def __str__(self):
-        return "Cart " + str(self.cart_id)
-
-class Wishlist(models.Model):
-    
-    wishlist_id = models.AutoField(primary_key=True, auto_created=True)
-
-    def __str__(self):
-        return "Wishlist " + str(self.wishlist_id)
-
 class User(models.Model):
     
     user_id = models.AutoField(primary_key=True, auto_created=True)
     name = models.TextField()
     password = models.TextField(default="1234")
     email = models.TextField(default="onbalikli@mail.com")
-    cart = models.OneToOneField(Cart, on_delete=models.CASCADE, related_name="user")
-    wishlist = models.OneToOneField(Wishlist, on_delete=models.CASCADE, related_name="user")
 
     updated = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(auto_now_add=True)
@@ -42,6 +25,23 @@ class User(models.Model):
 
     class Meta:
         ordering = ['-updated']
+
+class Cart(models.Model):
+    cart_id = models.AutoField(primary_key=True, auto_created=True)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="cart")
+    total = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    total_revenue = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+
+    def __str__(self):
+        return "Cart " + str(self.cart_id)
+
+class Wishlist(models.Model):
+    
+    wishlist_id = models.AutoField(primary_key=True, auto_created=True)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="wishlist")
+
+    def __str__(self):
+        return "Wishlist " + str(self.wishlist_id)
 
 class Author(models.Model):
 
@@ -67,7 +67,7 @@ class Book(models.Model):
     image_link = models.TextField(default='')
     original_price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
-    discount_rate = models.FloatField(default=1)
+    discount_rate = models.DecimalField(max_digits=3, decimal_places=2, default=1)
     in_stock = models.BooleanField(default=True)
     description = models.TextField(default='')
     arrival_price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
@@ -96,7 +96,7 @@ class Cart_Item(models.Model):
     revenue = models.DecimalField(max_digits=10, decimal_places=2, default=0)
 
     def __str__(self):
-        return "Cart Item" + str(self.item_id) + str(self.book.name)
+        return "Cart Item " + str(self.item_id) + " " + str(self.book.title)
 
 class Wishlist_Item(models.Model):
     item_id = models.AutoField(primary_key=True, auto_created=True)
@@ -104,18 +104,18 @@ class Wishlist_Item(models.Model):
     book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name="wishlist_items")
 
     def __str__(self):
-        return "Wishlist Item" + str(self.item_id)
+        return "Wishlist Item " + str(self.item_id)
 
 class Order(models.Model):
     order_id = models.AutoField(primary_key=True, auto_created=True)
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE) #check this one for multiple foreign keys
+    user = models.ForeignKey(User, on_delete=models.CASCADE) #check this one for multiple foreign keys
     date = models.DateTimeField(auto_now=True)
     status = models.TextField(default='Processing')
     total = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     total_revenue = models.DecimalField(max_digits=10, decimal_places=2, default=0)
 
     def __str__(self):
-        return "Order" + str(self.order_id)
+        return "Order " + str(self.order_id)
 
 class Order_Item(models.Model):
     item_id = models.AutoField(primary_key=True, auto_created=True)
@@ -126,4 +126,4 @@ class Order_Item(models.Model):
     revenue = models.DecimalField(max_digits=10, decimal_places=2, default=0)
 
     def __str__(self):
-        return "Order Item" + str(self.item_id) + str(self.book.name)
+        return "Order Item " + str(self.item_id) + " " + str(self.book.title)

@@ -39,6 +39,7 @@ urlpatterns = [
 
 
     path('getWishlistItems/<str:pk>/', views.getWishlistItems),
+    path('getWishlistItem/<str:b_pk>/<str:u_pk>', views.getWishlistItem),
     path('addWishlistItem/<str:pk>', views.addWishlistItem),
     path('deleteWishlistItem/<str:b_pk>/<str:u_pk>', views.deleteWishlistItem),
     #path('updateWishlistItem/<str:b_pk>/<str:u_pk>', views.updateWishlistItem),
