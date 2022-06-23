@@ -37,8 +37,13 @@ const HeaderBar = ({home_search_term , setHomeSearchTerm} ) => { // home search 
     const handleDBLoadUserWishlist = () => { // not using useEffect as it will only be called inside IF block
         axios.get('http://localhost:8000/getWishlistItems/' + user_id )
         .then(function (response) {
+<<<<<<< HEAD
             //console.log("handDBloaduserWishlist");
             //console.log(response.data); 
+=======
+            console.log("handDBloaduserWishlist");
+            console.log(response.data); 
+>>>>>>> master
             for (const wishlistItem of response.data) { // response.data = cartItems {book:2 , amount: 1}  => book_id; other fields in cartItem is useless
                 handleDBLoadWishlistBook(wishlistItem.book) // carItem.book = bookID; not the book object for some reason 
             }

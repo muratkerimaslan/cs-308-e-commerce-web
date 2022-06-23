@@ -63,5 +63,10 @@ urlpatterns = [
     path('getOrder30/<str:pk>/', views.getOrder30),
 
     path('updateOrderStatus/<str:pk>', views.updateOrderStatus),
+<<<<<<< HEAD
     path('getRevenueByDate/<str:pk>', views.getRevenueByDate)
+=======
+    path('getRevenueByDate/<str:pk>', views.getRevenueByDate),
+    path('getAllGenres', views.getAllGenres)
+>>>>>>> master
 ]
