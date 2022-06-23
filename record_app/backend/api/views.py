@@ -31,7 +31,8 @@ def createUser(request):
     
     temp_user = User.objects.create(
         name = data['name'],
-        password = data['password'] 
+        password = str(hash(data['password'])),
+        email = data['email']
     )
 
     Cart.objects.create(
@@ -52,7 +53,7 @@ def updateUser(request, pk):
         user.name = data['name']
     
     if data.get('password') is not None:
-        user.password = data['password']
+        user.password = str(hash(data['password']))
 
     serializer = UserSerializer(user, many=False)
     return Response(serializer.data)
@@ -72,7 +73,7 @@ def authenticateUser(request):
     if data.get('name'):
         user = User.objects.get(name=data['name'])
         
-        if data.get('password') is not None and user.password == data.get('password'):
+        if data.get('password') is not None and user.password == str(hash(data.get('password'))):
             is_authenticated = True
         else:
             print('Please enter a password')
@@ -191,6 +192,9 @@ def updateBook(request, pk):
 
     if data.get('discount_rate') is not None:
         book.discount_rate = data['discount_rate']
+        message = "There is a discount on the book \"" + book.title  + "\" go ahead and buy it now!"""
+        #wishlists = Wishlist.objects.get()
+        #server.sendmail(sender_email, user.mail, message)
     
     book.price = book.original_price * Decimal.from_float(book.discount_rate)
     #print(book.price * book.discount_rate)
@@ -619,3 +623,14 @@ def getRevenueByDate(request, pk):
 
 
     return Response(response)
+
+@api_view(['GET'])
+def getAllGenres(request):
+    books = Book.objects.all()
+    genres = []
+    for book in books.iterator():
+        temp_genre = book.genre
+        if temp_genre not in genres:
+            genres.append(temp_genre)
+
+    return Response(genres)
