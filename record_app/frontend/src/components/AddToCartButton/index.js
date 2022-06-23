@@ -66,7 +66,6 @@ const AddToCartButton =  ({book, msg = "add to cart", init_qty = 1}) => {
         console.log("book id = ");
         console.log(book.book_id);
         console.log(qty);
-        setGlobalCartNewQty(book,parseInt(qty));
 
         if (user_id !== ''){ // only add to databse if the user is logged in
             // now to check if item exists in cart;
@@ -75,8 +74,10 @@ const AddToCartButton =  ({book, msg = "add to cart", init_qty = 1}) => {
                 console.log("deleting book to update book name :" + book.title);
                 handleDBDeleteFromCart(book.book_id);
             }
+            
             handleDBAddToCart(book.book_id,parseInt(qty));
         }
+        setGlobalCartNewQty(book,parseInt(qty));
         alert('added to cart');
     }
 
