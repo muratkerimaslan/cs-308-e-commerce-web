@@ -74,9 +74,10 @@ const AddToCartButton =  ({book, msg = "add to cart", init_qty = 1}) => {
                 console.log("deleting book to update book name :" + book.title);
                 handleDBDeleteFromCart(book.book_id);
             }
-            setGlobalCartNewQty(book,parseInt(qty));
+            
             handleDBAddToCart(book.book_id,parseInt(qty));
         }
+        setGlobalCartNewQty(book,parseInt(qty));
         alert('added to cart');
     }
 

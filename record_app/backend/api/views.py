@@ -572,11 +572,19 @@ def getBooksByGenre(request,pk):
 # discount 
 
 # gets all the orders of one user
+#   cart = User.objects.get(user_id=pk).cart
+#     cart_items = cart.cart_items.all()
+
+    # temp_user = User.objects.get(user_id = pk)
+    # wishlist = Wishlist.objects.get(user=temp_user)
+    # #temp_user = User.objects.get(user_id = pk)
+    #Order.objects.get(user_id=pk)
 @api_view(['GET']) 
-def getOrders(request, pk):
-    orders = Order.objects.get(user_id=pk)
+def getOrders(request, pk):    
+    orders = Order.objects.filter(user_id=pk)
     serializer = OrderSerializer(orders, many=True)
     return Response(serializer.data)
+    #return Response(4);
 
 # get all the orders within 30 days
 @api_view(['GET']) 

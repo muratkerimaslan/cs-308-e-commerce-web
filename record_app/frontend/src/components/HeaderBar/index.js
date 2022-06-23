@@ -129,6 +129,7 @@ const HeaderBar = ({home_search_term , setHomeSearchTerm} ) => { // home search 
                 </>
             }
             {
+                (user_id !== '') ?
                 <>
                     <li> 
                         <Link to='/Wishlist'> Wishlist </Link>
@@ -136,14 +137,16 @@ const HeaderBar = ({home_search_term , setHomeSearchTerm} ) => { // home search 
                     </li>
                     <li>
                         <Link to = '/OrderHistoryPage'> Order History</Link><br/>
-                        <p style={{color:'rgb(17, 71, 121)', fontWeight:'600'}}> ({numWishlistItems} orders) </p>
                     </li>  
+                </>
+                :
+                <>
                 </>
                
             }
 
             {
-                (user_id !== '' && user_id <= 2) ?  // product manager 
+                (user_id !== '' && user_id <= 2) ?  // product manager ## id = [1,2]
                 <>
                     <li style={{color:'red' , fontWeight:'600'}}> (Product Manager {username} =&gt;) </li>
                     <li> <Link to='/ManageCommentsPage' style={{color:'red'}}> Manage Comments </Link></li>
@@ -151,6 +154,20 @@ const HeaderBar = ({home_search_term , setHomeSearchTerm} ) => { // home search 
                 </>              
                 :
                 <></>
+            }
+
+            {
+
+                (user_id !== '' && user_id > 2 && user_id < 4) ?  // sales manager  ## id = [3,4]
+                <>
+                    <li style={{color:'blue' , fontWeight:'600'}}> (Sales Manager {username} =&gt;) </li>
+                    <li> <Link to='/ManageCommentsPage' style={{color:'red'}}> Manage Prices </Link></li>
+                    <li> <Link to='/ManageProductsPage' style={{color:'red'}}> Manage Refunds </Link></li>
+                    <li> <Link to='/ManageProductsPage' style={{color:'red'}}> Sale Statistics </Link></li>
+                </>              
+                :
+                <></>
+
             }
 
         </ul>
