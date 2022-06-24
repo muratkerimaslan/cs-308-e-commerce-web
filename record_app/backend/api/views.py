@@ -165,6 +165,8 @@ def updateBook(request, pk):
     if data.get('genre') is not None:
         book.genre = data['genre']
 
+    
+
     if data.get('publisher') is not None:
         book.publisher = data['publisher']
 
@@ -176,6 +178,9 @@ def updateBook(request, pk):
 
     if data.get('price') is not None:
         book.price = data['price']
+
+    if data.get('original_price') is not None:
+        book.original_price = data['original_price']
 
     if data.get('stock_amount') is not None:
         book.stock_amount = data['stock_amount']
@@ -198,13 +203,11 @@ def updateBook(request, pk):
         #wishlists = Wishlist.objects.get()
         #server.sendmail(sender_email, user.mail, message)
     
-    book.price = book.original_price * Decimal.from_float(book.discount_rate)
-    #print(book.price * book.discount_rate)
-    print(book.price * book.original_price)
+    book.price = float(book.original_price) * float(book.discount_rate)
+    print(float(book.discount_rate) * float(book.original_price))
     book.save()
     serializer = BookSerializer(book, many=False)
     return Response(serializer.data)
-
 @api_view(['DELETE'])
 def deleteBook(request, pk):
     book = Book.objects.get(book_id=pk)
@@ -617,13 +620,17 @@ def updateOrderStatus(request, pk):
 @api_view(['GET']) 
 def getRevenueByDate(request, pk):
     input_days = int(pk)
-    today = datetime.date.today()
-    until_date = today - datetime.timedelta(days=input_days)
-    orders = Order.objects.filter(entered__gte=until_date)
+    today = datetime.now()
+    print(today)
+    until_date = today - timedelta(days=input_days)
+    print(until_date)
+    orders = Order.objects.filter(date__gte=until_date)
     interval_revenue = 0
 
     for order in orders.iterator():
-        interval_revenue += order.total_revenue
+        
+        if order.status == "Processing" or order.status == "In-Transit" or order.status == "Delivered":
+            interval_revenue += order.total_revenue
 
     response = [
             {

@@ -15,6 +15,7 @@ const HeaderBar = ({home_search_term , setHomeSearchTerm} ) => { // home search 
     // const [{numCartItems}] = useGlobalState('cart'); // from order history
     // console.log('Numwish = ' + numWishlistItems);
     const [barSearchTerm, setBarSearchTerm] = useState('');
+    const [newGenres, setNewGenres] = useState([]);
 
     let current_adress = useLocation(); // to check if we are in cart page or not, to display checkout page
     // console.log("location = ");
@@ -34,6 +35,20 @@ const HeaderBar = ({home_search_term , setHomeSearchTerm} ) => { // home search 
         });
 }
 
+
+    const handleDBGetGenres = () => { // helper for loadwishlist and set frontend Global inside this because of async nature of axiso get
+        axios.get('http://localhost:8000/getAllGenres')
+        .then(function (response) {
+        // setLoadedBooksDict((prev) => ({...prev, bookId:response.data }));
+        setNewGenres(response.data);
+        console.log("newGenres:");
+        console.log(newGenres);
+        })
+        .catch(function (error) {
+        console.log(error);
+        });
+    }
+
     const handleDBLoadUserWishlist = () => { // not using useEffect as it will only be called inside IF block
         axios.get('http://localhost:8000/getWishlistItems/' + user_id )
         .then(function (response) {
@@ -48,6 +63,7 @@ const HeaderBar = ({home_search_term , setHomeSearchTerm} ) => { // home search 
         });
 }
     useEffect( () => {
+        handleDBGetGenres();
         if (user_id !== '')
         {
             handleDBLoadUserWishlist();
@@ -78,17 +94,40 @@ const HeaderBar = ({home_search_term , setHomeSearchTerm} ) => { // home search 
     //     // setBarSearchTerm( '' );
     // }
 
+
+
     const GenreListItems = genres.map(
         (genre) => {
             let address = "/Genres/" + genre;
             
-            return(<li> 
-                <Link to = {address}   > {genre} </Link> 
+            return(
+            <li> 
+                <Link to = {address} > {genre} </Link> 
             </li>
-        )
-            }
+            )
+        }
     )
 
+    const DropDownGenres = newGenres.map((genre) => {
+
+        if (genres.includes(genre)){
+            return (<></>)
+        }
+            let address = "/Genres/" + genre;
+            return (<Link to = {address} > {genre} </Link> )
+
+
+    })
+
+
+/*         <div class="dropdown">
+        <button class="dropbtn">Dropdown</button>
+        <div class="dropdown-content">
+            <a href="#">Link 1</a>
+            <a href="#">Link 2</a>
+            <a href="#">Link 3</a>
+        </div>
+        </div> */
 
     return(
         
@@ -96,6 +135,14 @@ const HeaderBar = ({home_search_term , setHomeSearchTerm} ) => { // home search 
         <ul className="header-bar" >
             <li> <Link to='/'> Home </Link></li>
             { GenreListItems}
+
+            <div class="dropdown">
+                <button class="dropbtn">Other</button>
+                <div class="dropdown-content">
+                        {DropDownGenres}
+                </div>
+            </div>
+
             <li>
                
     <               form onSubmit={searchSubmit}>
