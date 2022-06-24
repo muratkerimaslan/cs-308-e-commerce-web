@@ -1,12 +1,13 @@
 from pickle import TRUE
 from turtle import isvisible
 from urllib import response
-from datetime import date, datetime
+from datetime import date, datetime , timedelta
 from django.shortcuts import render
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from sympy import true
 from decimal import Decimal
+import smtplib, ssl
 
 from .serializers import CommentSerializer, UserSerializer, BookSerializer, AuthorSerializer, CartSerializer, Cart_ItemSerializer, WishlistSerializer, Wishlist_ItemSerializer, OrderSerializer, Order_ItemSerializer
 from .models import User, Book, Comment, Author, Cart, Cart_Item, Order, Order_Item, Wishlist, Wishlist_Item
@@ -166,6 +167,8 @@ def updateBook(request, pk):
     if data.get('genre') is not None:
         book.genre = data['genre']
 
+    
+
     if data.get('publisher') is not None:
         book.publisher = data['publisher']
 
@@ -177,6 +180,9 @@ def updateBook(request, pk):
 
     if data.get('price') is not None:
         book.price = data['price']
+
+    if data.get('original_price') is not None:
+        book.original_price = data['original_price']
 
     if data.get('stock_amount') is not None:
         book.stock_amount = data['stock_amount']
@@ -199,9 +205,8 @@ def updateBook(request, pk):
         #wishlists = Wishlist.objects.get()
         #server.sendmail(sender_email, user.mail, message)
     
-    book.price = book.original_price * Decimal.from_float(book.discount_rate)
-    #print(book.price * book.discount_rate)
-    print(book.price * book.original_price)
+    book.price = float(book.original_price) * float(book.discount_rate)
+    print(float(book.discount_rate) * float(book.original_price))
     book.save()
     serializer = BookSerializer(book, many=False)
     return Response(serializer.data)
@@ -326,13 +331,16 @@ def updateCartItem(request, b_pk, u_pk):
     return Response(serializer.data)
 
 # Checkout function
-@api_view(['GET'])
+@api_view(['POST'])
 def checkout(request, pk):
     temp_user = User.objects.get(user_id = pk)
     cart = Cart.objects.get(user=temp_user)
     cart_items = cart.cart_items.all()
     # The `iterator()` method ensures only a few rows are fetched from
     # the database at a time, saving memory.
+    data = request.data
+    address = data['address']
+    
     enough_in_stock = True
     for item in cart_items.iterator():
         if item.book.stock_amount < item.amount:
@@ -340,7 +348,8 @@ def checkout(request, pk):
     
     if enough_in_stock:
         temp_order = Order.objects.create(
-            user = temp_user
+            user = temp_user,
+            
         )
 
         for item in cart_items.iterator():
@@ -385,7 +394,7 @@ def checkout(request, pk):
 def refund(request, pk):
     order = Order.objects.get(order_id=pk)
 
-    if order.status == "Refund Requested" or order.status == 'Processing' or order.status == 'In-transit': 
+    if order.status == "Refund Request" or order.status == 'Processing' or order.status == 'In-transit': 
         order_items = order.order_items.all()
 
         for item in order_items.iterator():
@@ -597,7 +606,7 @@ def getOrders(request, pk):
 @api_view(['GET']) 
 def getOrder30(request):
     current_time = datetime.now()
-    orders = Order.objects.filter(date - current_time < 30)
+    orders = Order.objects.filter(date__range=[current_time.date() - timedelta(days=30), current_time])
     serializer = OrderSerializer(orders, many=True)
     return Response(serializer.data)
 
@@ -618,13 +627,15 @@ def updateOrderStatus(request, pk):
 @api_view(['GET']) 
 def getRevenueByDate(request, pk):
     input_days = int(pk)
-    today = datetime.date.today()
-    until_date = today - datetime.timedelta(days=input_days)
-    orders = Order.objects.filter(entered__gte=until_date)
+    today = datetime.now()
+    print(today)
+    until_date = today - timedelta(days=input_days)
+    orders = Order.objects.filter(date__gte=until_date)
     interval_revenue = 0
 
     for order in orders.iterator():
-        interval_revenue += order.total_revenue
+        if order.status == "Processing" or order.status == "In-Transit" or order.status == "Delivered":
+            interval_revenue += order.total_revenue
 
     response = [
             {

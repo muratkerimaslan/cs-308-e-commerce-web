@@ -107,7 +107,10 @@ const OrderHistoryPage = () => {
         }
         else if (order.status === 'Refunded')
         {
-            <p style={{color:'green'}} > Your money has been refunded  </p>
+            return (
+                <p style={{color:'green'}} > Your money has been refunded  </p>
+            )
+            
         }
         else{
             return(<></>)

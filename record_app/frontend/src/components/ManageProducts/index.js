@@ -2,13 +2,15 @@ import { useState, useEffect } from "react";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import axios from 'axios';
 import { setGlobalUsername, setGlobalUserEmail, setGlobalUserId } from "../../auth/global_state";
+import './ManageProducts.css';
+
 
 
 const ManageProducts = () => {
     const [books, setBooks] = useState([]);
     const [submissionCount,setSubmissionCount] = useState(0);
-    const [newStocks, setNewStocks] = useState(); // {bookid : new_stock}
-    const [newBook, setNewBook] = useState();
+    const [newStocks, setNewStocks] = useState({}); // {bookid : new_stock}
+    const [newBook, setNewBook] = useState({});
     useEffect(() => { // for comments;
         const handleDB = () => {
             axios.get('http://localhost:8000/books/') // invisible comments
@@ -51,7 +53,7 @@ const ManageProducts = () => {
     
     const onSubmitBook = (e) => {
         e.preventDefault();
-        console.log('asdasd');
+        // console.log('asdasd');
         axios.post('http://localhost:8000/books/create/', {
           title: newBook.title,
           author_id: newBook.author_id,
@@ -156,7 +158,7 @@ const ManageProducts = () => {
                         </label>
                        
                         <div>
-                            <button type="submit" onClick={(e) => {onNewStockSubmit(e,book)}}
+                            <button type="submit" onClick={(e) => { console.log('click');onNewStockSubmit(e,book)}}
                             >Set stock</button>
                         </div>
                     </form>

@@ -163,9 +163,9 @@ const HeaderBar = ({home_search_term , setHomeSearchTerm} ) => { // home search 
                 (user_id !== '' && user_id > 6 && user_id <= 8) ?  // sales manager  ## id = 7 8
                 <>
                     <li style={{color:'blue' , fontWeight:'600'}}> (Sales Manager {username} =&gt;) </li>
-                    <li> <Link to='/ManagePricesPage' style={{color:'red'}}> Manage Prices </Link></li>
-                    <li> <Link to='/ManageRefundsPage' style={{color:'red'}}> Manage Refunds </Link></li>
-                    <li> <Link to='/SaleStatsPage' style={{color:'red'}}> Sale Statistics </Link></li>
+                    <li> <Link to='/ManagePricesPage' style={{color:'blue'}}> Manage Prices </Link></li>
+                    <li> <Link to='/ManageRefundsPage' style={{color:'blue'}}> Manage Refunds </Link></li>
+                    <li> <Link to='/SaleStatsPage' style={{color:'blue'}}> Sale Statistics </Link></li>
                 </>              
                 :
                 <></>

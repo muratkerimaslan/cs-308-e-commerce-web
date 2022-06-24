@@ -11,7 +11,7 @@ const AddToCartButton =  ({book, msg = "add to cart", init_qty = 1}) => {
 
     useEffect( () => {
         setQty(init_qty);
-        console.log("asdasd");
+        // console.log("asdasd");
     }, [init_qty] )
 
     // console.log("qty = " + qty ); 

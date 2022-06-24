@@ -113,6 +113,7 @@ class Order(models.Model):
     status = models.TextField(default='Processing')
     total = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     total_revenue = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    address = models.TextField(default="")
 
     def __str__(self):
         return "Order " + str(self.order_id)

@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useGlobalState, setGlobalUserRecentlyLoggedIn } from "../../auth/global_state";
 import './CreditCard.css';
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-const CreditCard = () => {
+const CreditCard = ({delivery_adress}) => {
     const [{user_id}] = useGlobalState('user');
     let navigate = useNavigate();
     // const[user] = useGlobalState('user');
@@ -12,12 +12,19 @@ const CreditCard = () => {
     const [cardHolderName,setCardHolderName] = useState('card holder full name');
     const [expMonth,setExpMonth] = useState('mm');
     const [expYear,setExpYear] = useState('yy');
-
+    useEffect( () => {
+        console.log('adress = ' + delivery_adress);
+    },[delivery_adress])
+    
     const SubmitCheckout = (e) => {
         e.preventDefault();
-        axios.get('http://localhost:8000/checkout/' + user_id )
+        console.log('adress = ' + delivery_adress);
+        axios.post('http://localhost:8000/checkout/' + user_id , {
+            address: delivery_adress
+        } )
             .then(function (response) {
                 console.log("Submitted checkut");
+               
                 console.log(response.data); 
                 alert('checkout submitted');
                 setGlobalUserRecentlyLoggedIn(true);

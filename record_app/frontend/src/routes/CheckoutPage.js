@@ -12,6 +12,7 @@ const CheckoutPage = () => {
     const [ccv,setCcv] = useState();
     const [expMonth,setExpMonth] = useState();
     const [expYear,setExpYear] = useState();
+    const [adress, setAdress] = useState('');
 
 
 
@@ -31,10 +32,19 @@ const CheckoutPage = () => {
             <h1>
                 You are at checkout page {user.username !== '' ? user.username : 'you need to login'};
             </h1>
-            <h2> 
+            <form>
+                <label>
+                <h2>Enter the delivery adress:</h2>
+                <input type="text"  placeholder = "Your adress"  style={{background: 'rgb(158, 215, 125)'  }} onChange={e => setAdress(e.target.value) } />
+                </label>
+                       
+                      
+            </form>
+
+            <h3> 
                 Enter your credit card info below to buy the products you added to your cart 
-            </h2>
-            <CreditCard/>
+            </h3>
+            <CreditCard delivery_adress={adress} />
             
         </>
     )
