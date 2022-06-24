@@ -89,12 +89,9 @@ const OrderHistoryPage = () => {
         }
         else if (order.status === 'Cancelled'){ // delete this one before final, just for test purposes
             return (
-            <button onClick={ (e) => {
-                e.preventDefault();
-                orderButtonClick(order,'Delivered');
-                alert("Your request has been acknowledged")
-            } }
-            > Re-order </button>
+                <>
+                <p style={{color:'red'}}>Your order has been cancelled</p>
+                </>
             )
         }
    

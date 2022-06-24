@@ -1,5 +1,5 @@
 .book-container li {
-    display: inline-block;
+    display: inline-grid;
     border-style: inset ;
     border-color: black;
     border-width: 2px;

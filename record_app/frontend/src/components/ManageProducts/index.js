@@ -62,7 +62,8 @@ const ManageProducts = () => {
           publisher_year: newBook.publisher_year, 
           genre: newBook.genre,
           price: newBook.price,
-          description: newBook.description
+          description: newBook.description,
+          arrival_price: newBook.arrival_price
         })
         .then(function (response) { // probably response.data[0] = {is_authenticated and user_id};
             console.log(response)
@@ -111,6 +112,10 @@ const ManageProducts = () => {
                     <label>
                     <p>Price</p>
                     <input type="text" required style={{background: 'rgb(158, 215, 125)'  }} onChange={e => setNewBook( { ...newBook, 'price' : e.target.value })} />
+                    </label>
+                    <label>
+                    <p>Arrival Price</p>
+                    <input type="text" required style={{background: 'rgb(158, 215, 125)'  }} onChange={e => setNewBook( { ...newBook, 'arrival_price' : e.target.value })} />
                     </label>
                     
                     
