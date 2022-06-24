@@ -193,7 +193,7 @@ const HeaderBar = ({home_search_term , setHomeSearchTerm} ) => { // home search 
             }
 
             {
-                (user_id !== '' && user_id <= 6) ?  // product manager ## id = 5 6
+                (user_id !== '' && user_id <= 15) ?  // product manager ## id = 14 15
                 <>
                     <li style={{color:'red' , fontWeight:'600'}}> (Product Manager {username} =&gt;) </li>
                     <li> <Link to='/ManageCommentsPage' style={{color:'red'}}> Manage Comments </Link></li>
@@ -207,7 +207,7 @@ const HeaderBar = ({home_search_term , setHomeSearchTerm} ) => { // home search 
 
             {
 
-                (user_id !== '' && user_id > 6 && user_id <= 8) ?  // sales manager  ## id = 7 8
+                (user_id !== '' && user_id > 15 && user_id <= 17) ?  // sales manager  ## id = 16 17
                 <>
                     <li style={{color:'blue' , fontWeight:'600'}}> (Sales Manager {username} =&gt;) </li>
                     <li> <Link to='/ManagePricesPage' style={{color:'blue'}}> Manage Prices </Link></li>

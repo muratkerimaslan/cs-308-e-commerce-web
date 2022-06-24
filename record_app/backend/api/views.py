@@ -78,9 +78,10 @@ def authenticateUser(request):
        
 
         
-        if data.get('password') is not None and user.password == str(zlib.adler(str(data.get('password')).encode())):
+        if data.get('password') is not None and user.password == str(zlib.adler32(str(data.get('password')).encode())):
             is_authenticated = True
         else:
+            print(str(zlib.adler(str(data.get('password')).encode())))
             # is_authenticated = True ## comment out before demo
             print('Please enter a password')
     else:
