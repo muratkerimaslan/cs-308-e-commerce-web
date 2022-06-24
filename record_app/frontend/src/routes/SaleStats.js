@@ -80,8 +80,8 @@ const SaleStatsPage = () => {
                 </form>
                 <p> {Object.keys(firstStat)} </p>
                 <h3> Between  {new Date(Date.now() - ((86400 * 1000) * firstDate)).toISOString().slice(0,10)} and {new Date(Date.now() - ( (86400*1000) * secondDate )).toISOString().slice(0,10)} :  </h3>
-                <h4> Revenue------------>      :{parseFloat(firstStat.interval_revenue) - parseFloat(secondStat.interval_revenue)}</h4>
-                <h4> Cost of Items Sold----> : {(parseFloat(firstStat.interval_revenue) - parseFloat(secondStat.interval_revenue)) - (parseFloat(firstStat.interval_profit) - parseFloat(secondStat.interval_profit)) }</h4>
+                <h4> Revenue------------&gt;      :{parseFloat(firstStat.interval_revenue) - parseFloat(secondStat.interval_revenue)}</h4>
+                <h4> Cost of Items Sold----&gt; : {(parseFloat(firstStat.interval_revenue) - parseFloat(secondStat.interval_revenue)) - (parseFloat(firstStat.interval_profit) - parseFloat(secondStat.interval_profit)) }</h4>
                 <h4> Net Income From Sales: {parseFloat(firstStat.interval_profit) - parseFloat(secondStat.interval_profit)}</h4>
             </div>
             
