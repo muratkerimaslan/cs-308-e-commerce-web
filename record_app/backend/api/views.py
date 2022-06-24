@@ -349,7 +349,7 @@ def checkout(request, pk):
     if enough_in_stock:
         temp_order = Order.objects.create(
             user = temp_user,
-            
+            address = data['address']
         )
 
         for item in cart_items.iterator():
@@ -629,16 +629,21 @@ def getRevenueByDate(request, pk):
     today = datetime.now()
     print(today)
     until_date = today - timedelta(days=input_days)
+    print(until_date)
     orders = Order.objects.filter(date__gte=until_date)
     interval_revenue = 0
+    interval_profit = 0
 
     for order in orders.iterator():
+        print(1)
         if order.status == "Processing" or order.status == "In-Transit" or order.status == "Delivered":
-            interval_revenue += order.total_revenue
+            interval_profit += order.total_revenue
+            interval_revenue += order.total
 
     response = [
             {
-                'interval_revenue' : interval_revenue
+                'interval_revenue' : interval_revenue,
+                'interval_profit' : interval_profit
             }
         ]
 

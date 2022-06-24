@@ -19,8 +19,8 @@ const OrderHistoryPage = () => {
         .then(function (response) {
             console.log("handDBloaduseOrderHistory called");
             console.log("response.data=", response.data);
-            setOrderHistory(response.data);
-            console.log('history=' , orderHistory);
+            setOrderHistory(response.data.reverse());
+            // console.log('history=' , orderHistory);
             
         })
         .catch(function (error) {
@@ -73,10 +73,6 @@ const OrderHistoryPage = () => {
                         console.log(error);   
                     });
 
-<<<<<<< HEAD
-=======
-                orderButtonClick(order, "Cancelled");
->>>>>>> merge_branch_esalter
                 alert("Your request has been acknowledged")
             }}> Cancel Order </button>
             )
@@ -111,16 +107,10 @@ const OrderHistoryPage = () => {
         }
         else if (order.status === 'Refunded')
         {
-<<<<<<< HEAD
             return (
                 <p style={{color:'green'}} > Your money has been refunded  </p>
             )
             
-=======
-            return(
-                <p style={{color:'green'}} > Your money has been refunded  </p>
-            )
->>>>>>> merge_branch_esalter
         }
         else{
             return(<></>)
@@ -142,6 +132,7 @@ const OrderHistoryPage = () => {
                         <p>Total Amount: {order.total}$</p>
                         <h5>Date: {order.date.slice(0,10)}</h5>
                         <h5>Time: {order.date.slice(11,16)}</h5>
+                        <h5>Address: {order.address}</h5>
                         {orderButton(order)}
                        
                                   

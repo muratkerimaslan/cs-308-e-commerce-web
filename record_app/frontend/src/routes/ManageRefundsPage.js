@@ -72,7 +72,7 @@ const ManageRefundsPage = () => {
         }
     }
 
-    const useOrders = orders.map((order) => {
+    const useOrders = orders.reverse().map((order) => {
        // console.log("order:",order);
         return(
             <div>         
@@ -98,13 +98,9 @@ const ManageRefundsPage = () => {
     return(
         <>
             <HeaderBar/>
-<<<<<<< HEAD
-            
-=======
             <ul className="order-container">
                 {useOrders}
             </ul>          
->>>>>>> merge_branch_esalter
         </>
 
     )
