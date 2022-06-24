@@ -634,16 +634,10 @@ def getRevenueByDate(request, pk):
     interval_profit = 0
 
     for order in orders.iterator():
-<<<<<<< HEAD
         print(1)
         if order.status == "Processing" or order.status == "In-Transit" or order.status == "Delivered":
             interval_profit += order.total_revenue
             interval_revenue += order.total
-=======
-        
-        if order.status == "Processing" or order.status == "In-Transit" or order.status == "Delivered":
-            interval_revenue += order.total_revenue
->>>>>>> branch_merge_esalter
 
     response = [
             {
