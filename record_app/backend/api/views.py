@@ -7,7 +7,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from sympy import true
 from decimal import Decimal
-import smtplib, ssl
+# import smtplib, ssl
 
 from .serializers import CommentSerializer, UserSerializer, BookSerializer, AuthorSerializer, CartSerializer, Cart_ItemSerializer, WishlistSerializer, Wishlist_ItemSerializer, OrderSerializer, Order_ItemSerializer
 from .models import User, Book, Comment, Author, Cart, Cart_Item, Order, Order_Item, Wishlist, Wishlist_Item
@@ -393,7 +393,6 @@ def checkout(request, pk):
 @api_view(['GET'])
 def refund(request, pk):
     order = Order.objects.get(order_id=pk)
-
     if order.status == "Refund Request" or order.status == 'Processing' or order.status == 'In-transit': 
         order_items = order.order_items.all()
 

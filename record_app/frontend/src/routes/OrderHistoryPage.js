@@ -73,6 +73,10 @@ const OrderHistoryPage = () => {
                         console.log(error);   
                     });
 
+<<<<<<< HEAD
+=======
+                orderButtonClick(order, "Cancelled");
+>>>>>>> merge_branch_esalter
                 alert("Your request has been acknowledged")
             }}> Cancel Order </button>
             )
@@ -107,10 +111,16 @@ const OrderHistoryPage = () => {
         }
         else if (order.status === 'Refunded')
         {
+<<<<<<< HEAD
             return (
                 <p style={{color:'green'}} > Your money has been refunded  </p>
             )
             
+=======
+            return(
+                <p style={{color:'green'}} > Your money has been refunded  </p>
+            )
+>>>>>>> merge_branch_esalter
         }
         else{
             return(<></>)
