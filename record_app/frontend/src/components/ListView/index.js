@@ -28,6 +28,7 @@ const ListView = ({Lgenre_target, Lsearch_term ='',sortCriteria = '' , setHomeBo
         const handleDB = () => {
             axios.get(db_adress)
             .then(function (response) {
+                console.log(response.data);
               setBooks(response.data);
               setHomeBookCount(response.data.length);
             //   console.log('homebookcount =  '+ response.data.length);

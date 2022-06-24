@@ -34,6 +34,7 @@ const ManageProducts = () => {
               console.log(error);
             });
             setSubmissionCount(prevSubmissionCount => prevSubmissionCount + 1);
+            console.log(submissionCount);
 
         
     }
@@ -63,7 +64,8 @@ const ManageProducts = () => {
           genre: newBook.genre,
           price: newBook.price,
           description: newBook.description,
-          arrival_price: newBook.arrival_price
+          arrival_price: newBook.arrival_price,
+          stock_amount: newBook.stock
         })
         .then(function (response) { // probably response.data[0] = {is_authenticated and user_id};
             console.log(response)
@@ -117,6 +119,11 @@ const ManageProducts = () => {
                     <p>Arrival Price</p>
                     <input type="text" required style={{background: 'rgb(158, 215, 125)'  }} onChange={e => setNewBook( { ...newBook, 'arrival_price' : e.target.value })} />
                     </label>
+                    <label>
+                    <p>Stock amount</p>
+                    <input type="text" required style={{background: 'rgb(158, 215, 125)'  }} onChange={e => setNewBook( { ...newBook, 'stock' : e.target.value })} />
+                    </label>
+                    
                     
                     
                     <div>
