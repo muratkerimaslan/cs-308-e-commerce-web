@@ -14,8 +14,9 @@ const ManageRefundsPage = () => {
         axios.get('http://localhost:8000/getOrder30/')
         .then(function (response) {
             console.log("handDBAllOrders called");
-            console.log("response.data=", response.data);
-            setOrders(response.data);
+            console.log("response.data=");
+            console.log(response.data);
+            setOrders(response.data.reverse());
             console.log('orders=' , orders);
             
         })
@@ -72,7 +73,7 @@ const ManageRefundsPage = () => {
         }
     }
 
-    const useOrders = orders.reverse().map((order) => {
+    const useOrders = orders.map((order) => {
        // console.log("order:",order);
         return(
             <div>         

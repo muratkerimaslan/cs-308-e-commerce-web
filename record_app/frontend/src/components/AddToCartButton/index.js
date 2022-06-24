@@ -10,7 +10,15 @@ const AddToCartButton =  ({book, msg = "add to cart", init_qty = 1}) => {
     const [qty,setQty] = useState(init_qty);
 
     useEffect( () => {
-        setQty(init_qty);
+        if (cart.Items_Id.hasOwnProperty(book.book_id))
+        {
+            setQty(cart.Items_Id[book.book_id]);
+        }
+        else
+        {
+            setQty(init_qty);
+        }
+        
         // console.log("asdasd");
     }, [init_qty] )
 

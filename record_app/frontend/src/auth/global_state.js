@@ -56,8 +56,12 @@ wishlist : {
       // rating: "4.0"
       // stock_amount: 5
       // title: "The Great Gatsby"
+},
+invoice:{
+  
 }
 });
+
 
 
  // v = previous state;
@@ -101,6 +105,7 @@ export const setGlobalCartNewQty = (book, new_qty) => {
     });
 } 
 
+
 export const setGlobalCartRemoveBook = (book_id) => {
 
   setGlobalState('cart', (v) => {
@@ -122,6 +127,8 @@ export const setGlobalCartRemoveBook = (book_id) => {
 
 }
 
+
+
 // export const setGlobalWishlistAdd = () => {
 //   setGlobalState('wishlist', (v) => {
     
@@ -142,11 +149,15 @@ export const setGlobalCartRemoveBook = (book_id) => {
 export const setGlobalWishlistRemoveBook = (book_id) => {
 
   setGlobalState('wishlist', (v) => {
-    
+    console.log('a>')
     if (v.Items_Id.hasOwnProperty(book_id))
     {
       
-      v.numWishlistItems -= 1;
+      if (v.Items.get(book_id).discount_rate < 1)
+      {
+        v.numWishlistItems -= 1;
+      }
+      
       delete v.Items_Id[book_id];
       // console.log("type of bookid = ");
       // console.log(typeof book_id);
@@ -154,7 +165,8 @@ export const setGlobalWishlistRemoveBook = (book_id) => {
       console.log('new wishlist after delete');
       console.log(v);
     }
-    
+    console.log('new wishlist delete call');
+      console.log(v);
     return (Object.assign({},v));
   }
   
@@ -167,11 +179,21 @@ export const setGlobalWishlistAddBook = (book) => {
   setGlobalState('wishlist' ,  (v) => {
     if (v.Items_Id.hasOwnProperty(book.book_id))
     {
+      console.log('new wishlist add call');
+      console.log(v);
       return (Object.assign({},v));
     }
-    v.numWishlistItems += 1;
+    
+    
+
     v.Items_Id = Object.assign({}, v.Items_Id, { [book.book_id] : 1});
-    v.Items.set(book.book_id, {book});
+    v.Items.set(book.book_id, book);
+   
+    if (v.Items.get(book.book_id).discount_rate < 1)
+      {
+        console.log('hhhh');
+        v.numWishlistItems += 1;
+      }
     console.log('new wishlist after add');
     console.log(v);
     return (Object.assign({},v)); // need object.assign beause global hook library doesn't understand the valeu is changed on "return v";

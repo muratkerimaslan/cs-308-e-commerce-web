@@ -7,6 +7,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from sympy import true
 from decimal import Decimal
+import zlib
 # import smtplib, ssl
 
 from .serializers import CommentSerializer, UserSerializer, BookSerializer, AuthorSerializer, CartSerializer, Cart_ItemSerializer, WishlistSerializer, Wishlist_ItemSerializer, OrderSerializer, Order_ItemSerializer
@@ -32,7 +33,8 @@ def createUser(request):
     
     temp_user = User.objects.create(
         name = data['name'],
-        password = str(hash(data['password'])),
+        password = str(zlib.adler32(str(data['password']).encode())),
+
         email = data['email']
     )
 
@@ -76,11 +78,11 @@ def authenticateUser(request):
        
 
         
-        if data.get('password') is not None and user.password == str(hash(data.get('password'))):
+        if data.get('password') is not None and user.password == str(zlib.adler(str(data.get('password')).encode())):
             is_authenticated = True
         else:
-            is_authenticated = True
-            #print('Please enter a password')
+            # is_authenticated = True ## comment out before demo
+            print('Please enter a password')
     else:
         print("user doesn't exist")
 

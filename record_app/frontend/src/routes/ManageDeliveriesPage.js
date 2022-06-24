@@ -16,7 +16,7 @@ const ManageDeliveriesPage = () => {
         .then(function (response) {
             console.log("handDBAllOrders called");
             console.log("response.data=", response.data);
-            setOrders(response.data);
+            setOrders(response.data.reverse());
             console.log('orders=' , orders);
             
         })
@@ -64,6 +64,7 @@ const ManageDeliveriesPage = () => {
                 </>
             )
         }
+        
         else if (order.status === "Refunded"){
             return(
                 <>
@@ -72,7 +73,9 @@ const ManageDeliveriesPage = () => {
             )
         }
         else
-            return (<></>)
+            return (<>
+                <p style={{color:'green'}}>Cancelled </p>
+            </>)
     }
 
 

@@ -15,6 +15,7 @@ import ManagePricesPage from './routes/ManagePricesPage';
 import ManageRefundsPage from './routes/ManageRefundsPage';
 import SaleStatsPage from './routes/SaleStats';
 import ManageDeliveriesPage from './routes/ManageDeliveriesPage';
+// import InvoicePage from './routes/InvoicePage';
 
 function App() {
   return (
@@ -28,7 +29,6 @@ function App() {
         <Route path ='/ManageCommentsPage' element = {<ManageCommentsPage/>}/>
         <Route path ='/ManageProductsPage' element = {<ManageProductsPage/>}/>
         <Route path ='/ManageDeliveriesPage' element = {<ManageDeliveriesPage/>}/>
-
 
         <Route path ='/ManageRefundsPage' element = {<ManageRefundsPage/>}/>
         <Route path ='/ManagePricesPage' element = {<ManagePricesPage/>}/>

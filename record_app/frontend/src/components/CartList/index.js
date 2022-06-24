@@ -5,7 +5,7 @@ import { setGlobalUserRecentlyLoggedIn,setGlobalCartRemoveBook,setGlobalCartNewQ
 import axios from "axios";
 import AddToCartButton from "../AddToCartButton";
 import './CartList.css';
-import { useState } from "react";
+import { useEffect, useState } from "react";
 const CartList = () => {
     const [cart] = useGlobalState('cart');
     const [user] = useGlobalState('user');
@@ -63,23 +63,29 @@ const CartList = () => {
     }
 
 
-    if (user.username !== "" && user.recently_logged_in === true) // logging in and checking cart for the first time
-    {
-        setGlobalUserRecentlyLoggedIn(false); // set recent_logged_in field to false;
+    useEffect( () => {
+        if (user.username !== "" ) // logging in and checking cart for the first time
+        {
+            setGlobalUserRecentlyLoggedIn(false); // set recent_logged_in field to false;
 
-        //flush cart;
-        console.log("flushing cart");
-        for (const [cur_key, cur_value] of Object.entries(cart.Items_Id)) {
-            console.log("cur_item");
-            console.log(cur_key);
-            // console.log(cur_value);
-            setGlobalCartRemoveBook(cur_key); // chec
-          }
-        // use effect downlaod new
+            //flush cart;
+            console.log("flushing cart");
+            for (const [cur_key, cur_value] of Object.entries(cart.Items_Id)) {
+                console.log("cur_item");
+                console.log(cur_key);
+                // console.log(cur_value);
+                setGlobalCartRemoveBook(cur_key); // chec
+            }
+            // use effect downlaod new
+            
+            handleDBLoadUserCart();
+        }
+
+    },[])
+
+    
         
-        handleDBLoadUserCart();
-        
-    }
+    
     // useEffect(() => {
         //     const handleDB = () => {
         //         const res = axios.get('http://localhost:8000/books')

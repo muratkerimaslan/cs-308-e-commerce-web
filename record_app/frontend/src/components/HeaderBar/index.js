@@ -85,7 +85,7 @@ const HeaderBar = ({home_search_term , setHomeSearchTerm} ) => { // home search 
     }
 
     //genres:
-    const genres = ["Fiction","Fantasy","Adventure","Science Fiction","Classic"];
+    const genres = ["Fiction","Fantasy","Science Fiction","Classic"];
 
     // const flushSearches = (e) => // breaks the Login and Cart Global states somehow
     // {
@@ -180,7 +180,7 @@ const HeaderBar = ({home_search_term , setHomeSearchTerm} ) => { // home search 
                 <>
                     <li> 
                         <Link to='/Wishlist'> Wishlist </Link>
-                        <p style={{color:'rgb(17, 71, 121)', fontWeight:'600'}}> ({numWishlistItems} items) </p>
+                        <p style={{color:'rgb(17, 71, 121)', fontWeight:'600'}}> ({numWishlistItems} items in discount) </p>
                     </li>
                     <li>
                         <Link to = '/OrderHistoryPage'> Order History</Link><br/>
