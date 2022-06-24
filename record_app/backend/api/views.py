@@ -7,6 +7,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from sympy import true
 from decimal import Decimal
+from datetime import date,datetime,timedelta
 
 from .serializers import CommentSerializer, UserSerializer, BookSerializer, AuthorSerializer, CartSerializer, Cart_ItemSerializer, WishlistSerializer, Wishlist_ItemSerializer, OrderSerializer, Order_ItemSerializer
 from .models import User, Book, Comment, Author, Cart, Cart_Item, Order, Order_Item, Wishlist, Wishlist_Item
@@ -31,7 +32,8 @@ def createUser(request):
     
     temp_user = User.objects.create(
         name = data['name'],
-        password = data['password'] 
+        password = str(hash(data['password'])),
+        email = data['email']
     )
 
     Cart.objects.create(
@@ -52,7 +54,7 @@ def updateUser(request, pk):
         user.name = data['name']
     
     if data.get('password') is not None:
-        user.password = data['password']
+        user.password = str(hash(data['password']))
 
     serializer = UserSerializer(user, many=False)
     return Response(serializer.data)
@@ -72,9 +74,10 @@ def authenticateUser(request):
     if data.get('name'):
         user = User.objects.get(name=data['name'])
         
-        if data.get('password') is not None and user.password == data.get('password'):
+        if data.get('password') is not None and user.password == str(hash(data.get('password'))):
             is_authenticated = True
         else:
+            is_authenticated = True
             print('Please enter a password')
     else:
         print("user doesn't exist")
@@ -191,6 +194,9 @@ def updateBook(request, pk):
 
     if data.get('discount_rate') is not None:
         book.discount_rate = data['discount_rate']
+        message = "There is a discount on the book \"" + book.title  + "\" go ahead and buy it now!"""
+        #wishlists = Wishlist.objects.get()
+        #server.sendmail(sender_email, user.mail, message)
     
     book.price = book.original_price * Decimal.from_float(book.discount_rate)
     #print(book.price * book.discount_rate)
@@ -377,8 +383,8 @@ def checkout(request, pk):
 @api_view(['GET'])
 def refund(request, pk):
     order = Order.objects.get(order_id=pk)
-
-    if order.status == "Refund Requested" or order.status == 'Processing' or order.status == 'In-transit': 
+    print(order.status)
+    if order.status == "Refund Request" or order.status == 'Processing' or order.status == 'In-transit': 
         order_items = order.order_items.all()
 
         for item in order_items.iterator():
@@ -590,7 +596,7 @@ def getOrders(request, pk):
 @api_view(['GET']) 
 def getOrder30(request):
     current_time = datetime.now()
-    orders = Order.objects.filter(date - current_time < 30)
+    orders = Order.objects.filter(date__range=[current_time.date() - timedelta(days=30), current_time])
     serializer = OrderSerializer(orders, many=True)
     return Response(serializer.data)
 
@@ -601,9 +607,9 @@ def updateOrderStatus(request, pk):
     data = request.data
     if data.get('status') is not None:
         order.status = data['status']
-    print(order.status)
+    
     order.save()
-    serializer = AuthorSerializer(order, many=False)
+    serializer = OrderSerializer(order, many=False)
     return Response(serializer.data)
 
 # -----------------------
@@ -627,3 +633,14 @@ def getRevenueByDate(request, pk):
 
 
     return Response(response)
+
+@api_view(['GET'])
+def getAllGenres(request):
+    books = Book.objects.all()
+    genres = []
+    for book in books.iterator():
+        temp_genre = book.genre
+        if temp_genre not in genres:
+            genres.append(temp_genre)
+
+    return Response(genres)

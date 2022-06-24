@@ -125,7 +125,7 @@ const ListView = ({Lgenre_target, Lsearch_term ='',sortCriteria = '' , setHomeBo
                 
                 </Link> 
                     {
-                        (parseFloat(book.discount_rate) > 0) ? <h3 style={{textDecoration:'line-through', textDecorationThickness:'2px', textDecorationColor:'red'}}> {book.original_price} $</h3> 
+                        (parseFloat(book.discount_rate) < 1) ? <h3 style={{textDecoration:'line-through', textDecorationThickness:'2px', textDecorationColor:'red'}}> {book.original_price} $</h3> 
                         
                         :
                         <>

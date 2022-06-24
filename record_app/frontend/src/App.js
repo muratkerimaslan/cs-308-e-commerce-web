@@ -11,7 +11,10 @@ import ManageCommentsPage from './routes/ManageCommentsPage';
 import ManageProductsPage from './routes/ManageProductsPage';
 import WishlistPage from './routes/WishlistPage';
 import OrderHistoryPage from './routes/OrderHistoryPage';
-
+import ManagePricesPage from './routes/ManagePricesPage';
+import ManageRefundsPage from './routes/ManageRefundsPage';
+import SaleStatsPage from './routes/SaleStats';
+import ManageDeliveriesPage from './routes/ManageDeliveriesPage';
 
 function App() {
   return (
@@ -21,9 +24,18 @@ function App() {
         <Route path='/Login' element = {<Login/>} />
         <Route path ='/SignUp' element = {<SignUp/>}/>
         <Route path ='/Cart' element = {<CartPage/>}/>
-        <Route path ='/ManageCommentsPage' element = {<ManageCommentsPage/>}/>
         <Route path ='/Wishlist' element = {<WishlistPage/>}/>
+        <Route path ='/ManageCommentsPage' element = {<ManageCommentsPage/>}/>
         <Route path ='/ManageProductsPage' element = {<ManageProductsPage/>}/>
+        <Route path ='/ManageDeliveriesPage' element = {<ManageDeliveriesPage/>}/>
+
+
+        <Route path ='/ManageRefundsPage' element = {<ManageRefundsPage/>}/>
+        <Route path ='/ManagePricesPage' element = {<ManagePricesPage/>}/>
+        <Route path ='/SaleStatsPage' element = {<SaleStatsPage/>}/>
+
+
+        
         <Route path ='/OrderHistoryPage' element = {<OrderHistoryPage/>}/>
         <Route path="Book">
           <Route path=":bookId" element={<BookPage />} />

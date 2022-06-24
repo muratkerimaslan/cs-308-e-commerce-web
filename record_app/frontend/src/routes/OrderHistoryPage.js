@@ -41,7 +41,7 @@ const OrderHistoryPage = () => {
           })
           .then(function (response) {
             console.log("orderbutton response = " ,  response);
-            alert("Your request has been acknowledged")
+           
             setOrderClickCount(orderClickCount+1);
           })
           .catch(function (error) {
@@ -73,6 +73,7 @@ const OrderHistoryPage = () => {
                     });
 
                 orderButtonClick(order, "Cancelled");
+                alert("Your request has been acknowledged")
             }}> Cancel Order </button>
             )
         }
@@ -81,6 +82,7 @@ const OrderHistoryPage = () => {
             <button onClick={ (e) => {
                 e.preventDefault();
                 orderButtonClick(order,'Refund Request');
+                alert("Your request has been acknowledged")
             } }
             > Ask for Refund </button>
             )
@@ -90,6 +92,7 @@ const OrderHistoryPage = () => {
             <button onClick={ (e) => {
                 e.preventDefault();
                 orderButtonClick(order,'Delivered');
+                alert("Your request has been acknowledged")
             } }
             > Re-order </button>
             )
@@ -104,7 +107,9 @@ const OrderHistoryPage = () => {
         }
         else if (order.status === 'Refunded')
         {
-            <p style={{color:'green'}} > Your money has been refunded  </p>
+            return(
+                <p style={{color:'green'}} > Your money has been refunded  </p>
+            )
         }
         else{
             return(<></>)

@@ -146,11 +146,13 @@ const HeaderBar = ({home_search_term , setHomeSearchTerm} ) => { // home search 
             }
 
             {
-                (user_id !== '' && user_id <= 2) ?  // product manager ## id = [1,2]
+                (user_id !== '' && user_id <= 6) ?  // product manager ## id = 5 6
                 <>
                     <li style={{color:'red' , fontWeight:'600'}}> (Product Manager {username} =&gt;) </li>
                     <li> <Link to='/ManageCommentsPage' style={{color:'red'}}> Manage Comments </Link></li>
                     <li> <Link to='/ManageProductsPage' style={{color:'red'}}> Manage Products </Link></li>
+                    <li> <Link to='/ManageDeliveriesPage' style={{color:'red'}}> Manage Deliveries </Link></li>
+
                 </>              
                 :
                 <></>
@@ -158,7 +160,7 @@ const HeaderBar = ({home_search_term , setHomeSearchTerm} ) => { // home search 
 
             {
 
-                (user_id !== '' && user_id > 2 && user_id < 4) ?  // sales manager  ## id = [3,4]
+                (user_id !== '' && user_id > 6 && user_id <= 8) ?  // sales manager  ## id = 7 8
                 <>
                     <li style={{color:'blue' , fontWeight:'600'}}> (Sales Manager {username} =&gt;) </li>
                     <li> <Link to='/ManagePricesPage' style={{color:'red'}}> Manage Prices </Link></li>

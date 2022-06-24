@@ -60,8 +60,9 @@ urlpatterns = [
     path('getBooksByGenre/<str:pk>/', views.getBooksByGenre),
 
     path('getOrders/<str:pk>/', views.getOrders),
-    path('getOrder30/<str:pk>/', views.getOrder30),
+    path('getOrder30/', views.getOrder30),
 
     path('updateOrderStatus/<str:pk>', views.updateOrderStatus),
-    path('getRevenueByDate/<str:pk>', views.getRevenueByDate)
+    path('getRevenueByDate/<str:pk>', views.getRevenueByDate),
+    path('getAllGenres', views.getAllGenres)
 ]
